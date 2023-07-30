@@ -1,7 +1,8 @@
-﻿using System;
+﻿using AcmeStudios.ApiRefactor.Entities;
+using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace AcemStudios.ApiRefactor.DTOs
+namespace AcmeStudios.ApiRefactor.DTOs
 {
     public class UpdateStudioItemDto
     {

@@ -4,8 +4,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using AutoMapper;
+using AcmeStudios.ApiRefactor.Repository;
 
-namespace AcemStudios.ApiRefactor
+namespace AcmeStudios.ApiRefactor
 {
     public class Startup
     {
@@ -27,10 +28,10 @@ namespace AcemStudios.ApiRefactor
                  );
              });
 
+            services.AddSingleton<IStudioRepository, StudioRepository>();
+
             services.AddControllers();
-
             services.AddSwaggerGen();
-
             services.AddAutoMapper(typeof(Startup));
         }
 
