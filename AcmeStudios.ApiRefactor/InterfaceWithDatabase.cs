@@ -13,238 +13,187 @@ using System.Threading.Tasks;
 
 namespace AcemStudios.ApiRefactor
 {
-    public class InterfaceWithDatabase
-    {
-        public InterfaceWithDatabase()
+        public class InterfaceWithDatabase
         {
+            private readonly IConfiguration _configuration;
+            private readonly Cont _cont;
+            private readonly IMapper _mapper;
 
-        }
-
-        public async Task<ServiceResponse<List<GetStudioItemDto>>> AddStudioItem(AddStudioItemDto newStudioItem)
-        {
-            IConfigurationBuilder builder = new ConfigurationBuilder().AddJsonFile("appsettings.json", false, true);
-
-            IConfigurationRoot configuration = builder.Build();
-
-            string conn = configuration.GetConnectionString("StudioConnection");
-
-            var optionsBuilder = new DbContextOptionsBuilder<Cont>();
-            optionsBuilder.UseSqlServer(conn);
-
-
-            using (Cont _cont = new Cont(optionsBuilder.Options))
+            // Constructor that injects IConfiguration, Cont, and IMapper
+            public InterfaceWithDatabase(IConfiguration configuration, Cont cont, IMapper mapper)
             {
-                var config = new MapperConfiguration(cfg =>
-                {
-                    cfg.AddProfile<AutoMapperProfile>();
-                });
-
-                var _mapper = config.CreateMapper();
-
-                StudioItem item = _mapper.Map<StudioItem>(newStudioItem);
-                await _cont.StudioItems.AddAsync(item);
-                await _cont.SaveChangesAsync();
-
-                var serviceResponse = new ServiceResponse<List<GetStudioItemDto>>
-                {
-                    Data = await _cont.StudioItems.Select(c => _mapper.Map<GetStudioItemDto>(c)).ToListAsync(),
-                    Message = $"New item added.  Id: {item.StudioItemId}",
-                    Success = true
-                };
-
-                return serviceResponse;
+                _configuration = configuration;
+                _cont = cont;
+                _mapper = mapper;
             }
-        }
 
-        public async Task<ServiceResponse<List<GetStudioItemHeaderDto>>> GetAllStudioHeaderItems()
-        {
-
-            IConfigurationBuilder builder = new ConfigurationBuilder().AddJsonFile("appsettings.json", false, true);
-
-            IConfigurationRoot configuration = builder.Build();
-
-            string conn = configuration.GetConnectionString("StudioConnection");
-
-            var optionsBuilder = new DbContextOptionsBuilder<Cont>();
-            optionsBuilder.UseSqlServer(conn);
-
-            using (Cont _cont = new Cont(optionsBuilder.Options))
+            // Refactor 1: Combined common exception handling logic into a private method
+            private ServiceResponse<T> HandleException<T>(Exception ex, string message)
             {
-                var config = new MapperConfiguration(cfg =>
+                return new ServiceResponse<T>
                 {
-                    cfg.AddProfile<AutoMapperProfile>();
-                });
-
-                var _mapper = config.CreateMapper();
-
-                var serviceResponse = new ServiceResponse<List<GetStudioItemHeaderDto>>
-                {
-                    Data = await _cont.StudioItems.Select(c => _mapper.Map<GetStudioItemHeaderDto>(c)).ToListAsync(),
-                    Message = "Here's all the items in your studio",
-                    Success = true
+                    Success = false,
+                    Message = message + ": " + ex.Message
                 };
-
-                return serviceResponse;
             }
-        }
 
-        public async Task<ServiceResponse<GetStudioItemDto>> GetStudioItemById(int id)
-        {
-            IConfigurationBuilder builder = new ConfigurationBuilder().AddJsonFile("appsettings.json", false, true);
+            // Refactor 2: Added comments to explain the purpose of each method
 
-            IConfigurationRoot configuration = builder.Build();
-
-            string conn = configuration.GetConnectionString("StudioConnection");
-
-            var optionsBuilder = new DbContextOptionsBuilder<Cont>();
-            optionsBuilder.UseSqlServer(conn);
-
-            using (Cont _cont = new Cont(optionsBuilder.Options))
+            // Add a new studio item
+            public async Task<ServiceResponse<List<GetStudioItemDto>>> AddStudioItem(AddStudioItemDto newStudioItem)
             {
-                var config = new MapperConfiguration(cfg =>
-                {
-                    cfg.AddProfile<AutoMapperProfile>();
-                });
-
-                var _mapper = config.CreateMapper();
-                var item = await _cont.StudioItems
-                .Where(item => item.StudioItemId == id)
-                .Include(type => type.StudioItemType)
-                .FirstOrDefaultAsync();
-
-                var serviceResponse = new ServiceResponse<GetStudioItemDto>
-                {
-                    Data = _mapper.Map<GetStudioItemDto>(item),
-                    Message = "Here's your selected studio item",
-                    Success = true
-                };
-                return serviceResponse;
-            }
-        }
-
-        public async Task<ServiceResponse<GetStudioItemDto>> UpdateStudioItem(UpdateStudioItemDto updatedStudioItem)
-        {
-            IConfigurationBuilder builder = new ConfigurationBuilder().AddJsonFile("appsettings.json", false, true);
-
-            IConfigurationRoot configuration = builder.Build();
-
-            string conn = configuration.GetConnectionString("StudioConnection");
-
-            var optionsBuilder = new DbContextOptionsBuilder<Cont>();
-            optionsBuilder.UseSqlServer(conn);
-
-            using (Cont _cont = new Cont(optionsBuilder.Options))
-            {
-                var config = new MapperConfiguration(cfg =>
-                {
-                    cfg.AddProfile<AutoMapperProfile>();
-                });
-                var serviceResponse = new ServiceResponse<GetStudioItemDto>();
-
-                StudioItem studioItem = await _cont.StudioItems
-                    .FirstOrDefaultAsync(c => c.StudioItemId == updatedStudioItem.StudioItemId);
-                var _mapper = config.CreateMapper();
                 try
                 {
-                    studioItem.Acquired = updatedStudioItem.Acquired;
-                    studioItem.Description = updatedStudioItem.Description;
-                    studioItem.Eurorack = updatedStudioItem.Eurorack;
-                    studioItem.Name = updatedStudioItem.Name;
-                    studioItem.Price = updatedStudioItem.Price;
-                    studioItem.SerialNumber = updatedStudioItem.SerialNumber;
-                    studioItem.Sold = updatedStudioItem.Sold;
-                    studioItem.SoldFor = updatedStudioItem.SoldFor;
-                    studioItem.StudioItemType = updatedStudioItem.StudioItemType;
+                    // Map DTO to entity
+                    StudioItem item = _mapper.Map<StudioItem>(newStudioItem);
 
-                    serviceResponse.Data = _mapper.Map<GetStudioItemDto>(studioItem);
-                    serviceResponse.Message = "Update successful";
-                    serviceResponse.Success = true;
-                }
-                catch (Exception ex)
-                {
-                    serviceResponse.Success = false;
-                    serviceResponse.Message = ex.Message;
-                }
-
-                _cont.StudioItems.Update(studioItem);
-                await _cont.SaveChangesAsync();
-
-                return serviceResponse;
-            }
-        }
-
-        public async Task<ServiceResponse<List<GetStudioItemDto>>> DeleteStudioItem(int id)
-        {
-            IConfigurationBuilder builder = new ConfigurationBuilder().AddJsonFile("appsettings.json", false, true);
-
-            IConfigurationRoot configuration = builder.Build();
-
-            string conn = configuration.GetConnectionString("StudioConnection");
-
-            var optionsBuilder = new DbContextOptionsBuilder<Cont>();
-            optionsBuilder.UseSqlServer(conn);
-
-            using (Cont _cont = new Cont(optionsBuilder.Options))
-            {
-                var config = new MapperConfiguration(cfg =>
-                {
-                    cfg.AddProfile<AutoMapperProfile>();
-                });
-
-                var _mapper = config.CreateMapper();
-                var serviceResponse = new ServiceResponse<List<GetStudioItemDto>>();
-
-                try
-                {
-                    StudioItem item = await _cont.StudioItems.FirstAsync(c => c.StudioItemId == id);
-                    _cont.Remove(item);
+                    // Add to the database and save changes
+                    await _cont.StudioItems.AddAsync(item);
                     await _cont.SaveChangesAsync();
 
-                    serviceResponse.Data = await _cont.StudioItems.Select(c => _mapper.Map<GetStudioItemDto>(c)).ToListAsync();
-                    serviceResponse.Success = true;
-                    serviceResponse.Message = "Item deleted";
+                    var serviceResponse = new ServiceResponse<List<GetStudioItemDto>>
+                    {
+                        Data = await _cont.StudioItems.Select(c => _mapper.Map<GetStudioItemDto>(c)).ToListAsync(),
+                        Message = $"New item added.  Id: {item.StudioItemId}",
+                        Success = true
+                    };
+
+                    return serviceResponse;
                 }
                 catch (Exception ex)
                 {
-                    serviceResponse.Success = false;
-                    serviceResponse.Message = ex.Message;
+                    // Handle exceptions and return an error response
+                    return HandleException<List<GetStudioItemDto>>(ex, "Error adding studio item");
                 }
-
-                return serviceResponse;
             }
-        }
 
-        public async Task<ServiceResponse<List<StudioItemType>>> GetAllStudioItemTypes()
-        {
-            IConfigurationBuilder builder = new ConfigurationBuilder().AddJsonFile("appsettings.json", false, true);
-
-            IConfigurationRoot configuration = builder.Build();
-
-            string conn = configuration.GetConnectionString("StudioConnection");
-
-            var optionsBuilder = new DbContextOptionsBuilder<Cont>();
-            optionsBuilder.UseSqlServer(conn);
-
-            using (Cont _cont = new Cont(optionsBuilder.Options))
+            // Get all studio header items
+            public async Task<ServiceResponse<List<GetStudioItemHeaderDto>>> GetAllStudioHeaderItems()
             {
-                var config = new MapperConfiguration(cfg =>
+                try
                 {
-                    cfg.AddProfile<AutoMapperProfile>();
-                });
+                    var serviceResponse = new ServiceResponse<List<GetStudioItemHeaderDto>>
+                    {
+                        Data = await _cont.StudioItems.Select(c => _mapper.Map<GetStudioItemHeaderDto>(c)).ToListAsync(),
+                        Message = "Here's all the items in your studio",
+                        Success = true
+                    };
 
-                var _mapper = config.CreateMapper();
-                var serviceResponse = new ServiceResponse<List<StudioItemType>>
+                    return serviceResponse;
+                }
+                catch (Exception ex)
                 {
-                    Data = await _cont.StudioItemTypes.OrderBy(s => s.Value).ToListAsync(),
-                    Message = "Item types fetched",
-                    Success = true
-                };
+                    // Handle exceptions and return an error response
+                    return HandleException<List<GetStudioItemHeaderDto>>(ex, "Error getting studio header items");
+                }
+            }
 
-                return serviceResponse;
+            // Get a studio item by ID
+            public async Task<ServiceResponse<GetStudioItemDto>> GetStudioItemById(int id)
+            {
+                try
+                {
+                    var item = await _cont.StudioItems
+                        .Where(item => item.StudioItemId == id)
+                        .Include(type => type.StudioItemType)
+                        .FirstOrDefaultAsync();
+
+                    var serviceResponse = new ServiceResponse<GetStudioItemDto>
+                    {
+                        Data = _mapper.Map<GetStudioItemDto>(item),
+                        Message = "Here's your selected studio item",
+                        Success = true
+                    };
+
+                    return serviceResponse;
+                }
+                catch (Exception ex)
+                {
+                    // Handle exceptions and return an error response
+                    return HandleException<GetStudioItemDto>(ex, "Error getting studio item by ID");
+                }
+            }
+
+            // Update a studio item
+            public async Task<ServiceResponse<GetStudioItemDto>> UpdateStudioItem(UpdateStudioItemDto updatedStudioItem)
+            {
+                try
+                {
+                    var studioItem = await _cont.StudioItems
+                        .FirstOrDefaultAsync(c => c.StudioItemId == updatedStudioItem.StudioItemId);
+
+                    // Map updated data to the entity
+                    _mapper.Map(updatedStudioItem, studioItem);
+
+                    _cont.StudioItems.Update(studioItem);
+                    await _cont.SaveChangesAsync();
+
+                    var serviceResponse = new ServiceResponse<GetStudioItemDto>
+                    {
+                        Data = _mapper.Map<GetStudioItemDto>(studioItem),
+                        Message = "Update successful",
+                        Success = true
+                    };
+
+                    return serviceResponse;
+                }
+                catch (Exception ex)
+                {
+                    // Handle exceptions and return an error response
+                    return HandleException<GetStudioItemDto>(ex, "Error updating studio item");
+                }
+            }
+
+            // Delete a studio item by ID
+            public async Task<ServiceResponse<List<GetStudioItemDto>>> DeleteStudioItem(int id)
+            {
+                try
+                {
+                    var item = await _cont.StudioItems.FirstOrDefaultAsync(c => c.StudioItemId == id);
+                    if (item != null)
+                    {
+                        _cont.Remove(item);
+                        await _cont.SaveChangesAsync();
+                    }
+
+                    var serviceResponse = new ServiceResponse<List<GetStudioItemDto>>
+                    {
+                        Data = await _cont.StudioItems.Select(c => _mapper.Map<GetStudioItemDto>(c)).ToListAsync(),
+                        Success = true,
+                        Message = "Item deleted"
+                    };
+
+                    return serviceResponse;
+                }
+                catch (Exception ex)
+                {
+                    // Handle exceptions and return an error response
+                    return HandleException<List<GetStudioItemDto>>(ex, "Error deleting studio item");
+                }
+            }
+
+            // Get all studio item types
+            public async Task<ServiceResponse<List<StudioItemType>>> GetAllStudioItemTypes()
+            {
+                try
+                {
+                    var serviceResponse = new ServiceResponse<List<StudioItemType>>
+                    {
+                        Data = await _cont.StudioItemTypes.OrderBy(s => s.Value).ToListAsync(),
+                        Message = "Item types fetched",
+                        Success = true
+                    };
+
+                    return serviceResponse;
+                }
+                catch (Exception ex)
+                {
+                    // Handle exceptions and return an error response
+                    return HandleException<List<StudioItemType>>(ex, "Error getting studio item types");
+                }
             }
         }
-    }
-
+    
     public class StudioItem
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

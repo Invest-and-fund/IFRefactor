@@ -24,7 +24,7 @@ namespace AcemStudios.ApiRefactor
             services.AddCors(options =>
              {
                  options.AddPolicy("AllowMyOrigin",
-                 builder => builder.WithOrigins("http://localhost:4200")
+                 builder => builder.WithOrigins("https://localhost:4200")
                  .AllowAnyHeader()
                  .AllowAnyMethod()
                  );
