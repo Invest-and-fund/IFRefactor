@@ -1,4 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Configuration;
+using System.IO;
 
 namespace AcemStudios.ApiRefactor.Data
 {
@@ -6,6 +9,7 @@ namespace AcemStudios.ApiRefactor.Data
     {
         public DbSet<StudioItem> StudioItems { get; set; }
         public DbSet<StudioItemType> StudioItemTypes { get; set; }
+
         public Cont(DbContextOptions<Cont> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -24,6 +28,24 @@ namespace AcemStudios.ApiRefactor.Data
             new StudioItemType { StudioItemTypeId = 6, Value = "Oscillator" },
             new StudioItemType { StudioItemTypeId = 7, Value = "Utility" }
             );
+        }
+    }
+
+    public class ContFactory : IDesignTimeDbContextFactory<Cont>
+    {
+        public Cont CreateDbContext(string[] args)
+        {
+            IConfigurationRoot configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .Build();
+
+            var optionsBuilder = new DbContextOptionsBuilder<Cont>();
+            var connectionString = configuration.GetConnectionString("StudioConnection");
+
+            optionsBuilder.UseSqlServer(connectionString);
+
+            return new Cont(optionsBuilder.Options);
         }
     }
 }

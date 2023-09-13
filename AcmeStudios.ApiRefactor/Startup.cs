@@ -4,13 +4,16 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using AutoMapper;
+using Microsoft.OpenApi.Models;
 
 namespace AcemStudios.ApiRefactor
 {
     public class Startup
     {
+        private IConfiguration _config;
         public Startup(IConfiguration configuration)
         {
+            _config = configuration;
             Configuration = configuration;
         }
 
@@ -29,7 +32,10 @@ namespace AcemStudios.ApiRefactor
 
             services.AddControllers();
 
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "ACME STUDIOS", Version = "v1" });
+            });
 
             services.AddAutoMapper(typeof(Startup));
         }
@@ -38,9 +44,15 @@ namespace AcemStudios.ApiRefactor
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();                
+                app.UseDeveloperExceptionPage();
+                
             }
-
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+              
+            });
             app.UseStaticFiles();
 
             app.UseHttpsRedirection();
