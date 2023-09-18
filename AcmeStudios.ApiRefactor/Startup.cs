@@ -4,6 +4,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using AutoMapper;
+using AcmeStudios.ApiRefactor;
+using AcemStudios.ApiRefactor.Data;
 
 namespace AcemStudios.ApiRefactor
 {
@@ -18,6 +20,10 @@ namespace AcemStudios.ApiRefactor
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped<IStudioItemService, StudioItemService>();
+
+            services.AddSqlServer<Cont>(Configuration.GetConnectionString("StudioConnection"));
+
             services.AddCors(options =>
              {
                  options.AddPolicy("AllowMyOrigin",
@@ -48,6 +54,8 @@ namespace AcemStudios.ApiRefactor
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseCors("AllowMyOrigin");
 

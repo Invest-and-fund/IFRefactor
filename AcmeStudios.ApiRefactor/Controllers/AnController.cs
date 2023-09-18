@@ -1,6 +1,11 @@
 ﻿using AcemStudios.ApiRefactor.DTOs;
+using AcmeStudios.ApiRefactor;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using System.Linq;
+using System.Collections.Generic;
+using AcmeStudios.ApiRefactor.DomainModels;
+using System;
 
 namespace AcemStudios.ApiRefactor.Controllers
 {
@@ -8,57 +13,147 @@ namespace AcemStudios.ApiRefactor.Controllers
     [ApiController]
     public class AnController : ControllerBase
     {
-        public AnController()
-        {
+        private readonly IStudioItemService m_studioItemService;
 
+        public AnController(IStudioItemService studioItemService)
+        {
+            m_studioItemService = studioItemService;
         }
 
         [HttpGet("GetAll")]
         public async Task<IActionResult> Get()
         {
-            InterfaceWithDatabase _iwd = new InterfaceWithDatabase();
+            try
+            {
+                var studioHeaderItems = await m_studioItemService.GetAllStudioHeaderItemsAsync();
+                var serviceResponse = new ServiceResponse<List<GetStudioItemHeaderDto>>
+                {
+                    Data = studioHeaderItems,
+                    Message = "Here's all the items in your studio",
+                    Success = true
+                };
 
-            return Ok(await _iwd.GetAllStudioHeaderItems());
+                return Ok(serviceResponse);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            InterfaceWithDatabase _iwd = new InterfaceWithDatabase();
-
-            return Ok(await _iwd.GetStudioItemById(id));
+            try
+            {
+                var studioItem = await m_studioItemService.GetStudioItemByIdAsync(id);
+                var serviceResponse = new ServiceResponse<GetStudioItemDto>
+                {
+                    Data = studioItem,
+                    Message = "Here's your selected studio item",
+                    Success = true
+                };
+                return Ok(serviceResponse);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> Add(AddStudioItemDto studioItem)
         {
-            InterfaceWithDatabase _iwd = new InterfaceWithDatabase();
+            try
+            {
+                var addedStudioItems = await m_studioItemService.AddStudioItemAsync(studioItem);
 
-            return Ok(await _iwd.AddStudioItem(studioItem));
+                var serviceResponse = new ServiceResponse<List<GetStudioItemDto>>
+                {
+                    Data = addedStudioItems,
+                    Message = $"New item added.  Id: {addedStudioItems.First().StudioItemId}",
+                    Success = true
+                };
+
+                return Ok(serviceResponse);
+            }
+            catch (Exception) 
+            {
+                throw;
+            }
         }
 
         [HttpPut]
         public async Task<IActionResult> Update(UpdateStudioItemDto studioItem)
         {
-            InterfaceWithDatabase _iwd = new InterfaceWithDatabase();
+            var serviceResponse = new ServiceResponse<GetStudioItemDto>();
 
-            return Ok(await _iwd.UpdateStudioItem(studioItem));
+            try
+            {
+                var updatedItem = await m_studioItemService.UpdateStudioItemAsync(studioItem);
+
+                serviceResponse.Data = updatedItem;
+                serviceResponse.Message = "Update successful";
+                serviceResponse.Success = true;
+            }
+            catch (ItemUpdateException ex)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = ex.Message;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return Ok(serviceResponse);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            InterfaceWithDatabase _iwd = new InterfaceWithDatabase();
+            var serviceResponse = new ServiceResponse<List<GetStudioItemDto>>();
 
-            return Ok(await _iwd.DeleteStudioItem(id));
+            try
+            {
+                var deletedItem = await m_studioItemService.DeleteStudioItemAsync(id);
+                serviceResponse.Data = deletedItem;
+                serviceResponse.Success = true;
+                serviceResponse.Message = "Item deleted";
+            }
+            catch (ItemDeleteException ex)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = ex.Message;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return Ok(serviceResponse);
         }
 
         [HttpGet]
         public async Task<IActionResult> GetStudioItemTypes()
         {
-            InterfaceWithDatabase _iwd = new InterfaceWithDatabase();
+            try
+            {
+                var studioTypes = await m_studioItemService.GetAllStudioItemTypesAsync();
+                var serviceResponse = new ServiceResponse<List<StudioItemType>>
+                {
+                    Data = studioTypes,
+                    Message = "Item types fetched",
+                    Success = true
+                };
 
-            return Ok(await _iwd.GetAllStudioItemTypes());
+                return Ok(serviceResponse);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

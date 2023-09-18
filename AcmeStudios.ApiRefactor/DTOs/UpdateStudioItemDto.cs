@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AcmeStudios.ApiRefactor.DomainModels;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace AcemStudios.ApiRefactor.DTOs
