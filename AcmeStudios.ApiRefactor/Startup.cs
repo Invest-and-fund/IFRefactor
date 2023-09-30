@@ -31,11 +31,11 @@ namespace AcmeStudios.ApiRefactor
 
             services.AddControllers();
 
-            services.AddDbContext<Cont>(options =>
-            {
-                var sqlConnectionString = Configuration.GetConnectionString("StudioConnection");
-                options.UseSqlServer(sqlConnectionString);
-            });
+            services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
+            var sqlConnectionString = Configuration.GetConnectionString("StudioConnection");
+            services.AddRepositories(sqlConnectionString);
+
+            services.AddTransient<InterfaceWithDatabase>();
 
             services.AddSwaggerGen(options =>
             {
