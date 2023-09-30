@@ -1,15 +1,13 @@
-﻿using AcmeStudios.ApiRefactor.Data;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AcmeStudios.ApiRefactor.DataAccess;
+using AcmeStudios.ApiRefactor.Domain;
 using AcmeStudios.ApiRefactor.DTOs;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace AcmeStudios.ApiRefactor
 {
@@ -154,7 +152,7 @@ namespace AcmeStudios.ApiRefactor
                     studioItem.SerialNumber = updatedStudioItem.SerialNumber;
                     studioItem.Sold = updatedStudioItem.Sold;
                     studioItem.SoldFor = updatedStudioItem.SoldFor;
-                    studioItem.StudioItemType = updatedStudioItem.StudioItemType;
+                    studioItem.StudioItemType = _mapper.Map<StudioItemType>(updatedStudioItem.StudioItemType);  // TODO this probably doesn't work
 
                     serviceResponse.Data = _mapper.Map<GetStudioItemDto>(studioItem);
                     serviceResponse.Message = "Update successful";
@@ -243,38 +241,6 @@ namespace AcmeStudios.ApiRefactor
                 return serviceResponse;
             }
         }
-    }
-
-    public class StudioItem
-    {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int StudioItemId { get; set; }
-        public DateTime Acquired { get; set; }
-        public DateTime? Sold { get; set; } = null;
-        [Required]
-        public string Name { get; set; }
-        [Required]
-        public string Description { get; set; }
-        [Required]
-        public string SerialNumber { get; set; }
-        public decimal Price { get; set; } //= 10.00M;
-        public decimal? SoldFor { get; set; } //= 0M;
-        public bool Eurorack { get; set; } //= false;
-        [Required]
-        public int StudioItemTypeId { get; set; }
-        public StudioItemType StudioItemType { get; set; }
-
-
-    }
-
-    public class StudioItemType
-    {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int StudioItemTypeId { get; set; }
-        [Required]
-        public string Value { get; set; }
-        [JsonIgnore]
-        public ICollection<StudioItem> StudioItem { get; set; }
     }
 
     public class ServiceResponse<T>

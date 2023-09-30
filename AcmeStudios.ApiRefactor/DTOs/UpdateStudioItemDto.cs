@@ -17,8 +17,7 @@ namespace AcmeStudios.ApiRefactor.DTOs
         public decimal Price { get; set; } = 10.00M;
         public decimal SoldFor { get; set; } = 0M;
         public bool Eurorack { get; set; } = false;
-
-        public StudioItemType StudioItemType { get; set; }
+        public StudioItemTypeDto StudioItemType { get; set; }
 
         //public StudioItemImage StudioItemImage { get; set; }
     }

@@ -1,11 +1,11 @@
+using AcmeStudios.ApiRefactor.DataAccess;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using AcmeStudios.ApiRefactor.Data;
 
 namespace AcmeStudios.ApiRefactor
 {
@@ -54,7 +54,7 @@ namespace AcmeStudios.ApiRefactor
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();                
+                app.UseDeveloperExceptionPage();
             }
 
             app.UseSwagger();

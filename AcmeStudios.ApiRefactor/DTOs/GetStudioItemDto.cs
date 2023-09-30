@@ -18,7 +18,7 @@ namespace AcmeStudios.ApiRefactor.DTOs
         public decimal? SoldFor { get; set; }
         public bool Eurorack { get; set; }
         public int StudioItemTypeId { get; set; }
-        public StudioItemType StudioItemType { get; set; }
+        public StudioItemTypeDto StudioItemType { get; set; }
 
         //public StudioItemImage StudioItemImage { get; set; }
     }

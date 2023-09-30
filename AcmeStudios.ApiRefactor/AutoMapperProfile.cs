@@ -1,4 +1,5 @@
-﻿using AcmeStudios.ApiRefactor.DTOs;
+﻿using AcmeStudios.ApiRefactor.Domain;
+using AcmeStudios.ApiRefactor.DTOs;
 using AutoMapper;
 
 namespace AcmeStudios.ApiRefactor
@@ -10,6 +11,7 @@ namespace AcmeStudios.ApiRefactor
             CreateMap<StudioItem, GetStudioItemDto>();
             CreateMap<AddStudioItemDto, StudioItem>();
             CreateMap<StudioItem, GetStudioItemHeaderDto>();
+            CreateMap<StudioItemType, StudioItemTypeDto>();
         }
     }
 }

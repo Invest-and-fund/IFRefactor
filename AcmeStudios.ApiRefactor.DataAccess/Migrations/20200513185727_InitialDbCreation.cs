@@ -1,7 +1,6 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace AcmeStudios.Migrations
+namespace AcmeStudios.ApiRefactor.DataAccess.Migrations
 {
     public partial class InitialDbCreation : Migration
     {
