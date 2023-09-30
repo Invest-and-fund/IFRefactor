@@ -36,6 +36,7 @@ namespace AcmeStudios.ApiRefactor.Controllers
         [HttpPut]
         public async Task<IActionResult> Update(UpdateStudioItemDto studioItem)
         {
+            // TODO I probably want to include the ID in the request here and check that the ID's match
             return Ok(await _iwd.UpdateStudioItem(studioItem));
         }
 

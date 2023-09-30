@@ -11,7 +11,11 @@ namespace AcmeStudios.ApiRefactor
             CreateMap<StudioItem, GetStudioItemDto>();
             CreateMap<AddStudioItemDto, StudioItem>();
             CreateMap<StudioItem, GetStudioItemHeaderDto>();
-            CreateMap<StudioItemType, StudioItemTypeDto>();
+            CreateMap<StudioItemType, StudioItemTypeDto>()
+                .ReverseMap();
+
+            CreateMap<UpdateStudioItemDto, StudioItem>()
+                .ForMember(dest => dest.StudioItemTypeId, opt => opt.MapFrom(src => src.StudioItemType.StudioItemTypeId));
         }
     }
 }

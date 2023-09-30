@@ -7,10 +7,10 @@ namespace AcmeStudios.ApiRefactor.Domain
     public class StudioItemType
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int StudioItemTypeId { get; set; }
+        public int StudioItemTypeId { get; init; }
         [Required]
-        public string Value { get; set; }
+        public string Value { get; init; }
         [JsonIgnore]
-        public ICollection<StudioItem> StudioItem { get; set; }
+        public ICollection<StudioItem> StudioItem { get; init; }
     }
 }

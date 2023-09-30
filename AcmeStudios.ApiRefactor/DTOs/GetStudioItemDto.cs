@@ -5,20 +5,20 @@ namespace AcmeStudios.ApiRefactor.DTOs
 {
     public class GetStudioItemDto
     {
-        public int StudioItemId { get; set; }
-        public DateTime Acquired { get; set; }
-        public DateTime? Sold { get; set; }
+        public int StudioItemId { get; init; }
+        public DateTime Acquired { get; init; }
+        public DateTime? Sold { get; init; }
         [Required]
-        public string Name { get; set; }
+        public string Name { get; init; }
         [Required]
-        public string Description { get; set; }
+        public string Description { get; init; }
         [Required]
-        public string SerialNumber { get; set; }
-        public decimal Price { get; set; }
-        public decimal? SoldFor { get; set; }
-        public bool Eurorack { get; set; }
-        public int StudioItemTypeId { get; set; }
-        public StudioItemTypeDto StudioItemType { get; set; }
+        public string SerialNumber { get; init; }
+        public decimal Price { get; init; }
+        public decimal? SoldFor { get; init; }
+        public bool Eurorack { get; init; }
+        public int StudioItemTypeId { get; init; }
+        public StudioItemTypeDto StudioItemType { get; init; }
 
         //public StudioItemImage StudioItemImage { get; set; }
     }

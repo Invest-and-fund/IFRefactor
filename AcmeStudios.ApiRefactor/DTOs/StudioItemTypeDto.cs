@@ -2,7 +2,7 @@
 {
     public class StudioItemTypeDto
     {
-        public int StudioItemTypeId { get; set; }
-        public string Value { get; set; }
+        public int StudioItemTypeId { get; init; }
+        public string Value { get; init; }
     }
 }

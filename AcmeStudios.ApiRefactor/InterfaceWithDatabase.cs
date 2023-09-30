@@ -1,35 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using AcmeStudios.ApiRefactor.DataAccess;
+using AcmeStudios.ApiRefactor.DataAccess.Repositories;
 using AcmeStudios.ApiRefactor.Domain;
 using AcmeStudios.ApiRefactor.DTOs;
 using AutoMapper;
-using Microsoft.EntityFrameworkCore;
 
 namespace AcmeStudios.ApiRefactor
 {
     public class InterfaceWithDatabase
     {
-        private readonly Cont _dbContext;
+        private readonly IStudioItemRepository _studioItemRepository;
+        private readonly IStudioItemTypeRepository _studioItemTypeRepository;
         private readonly IMapper _mapper;
 
-        public InterfaceWithDatabase(Cont dbContext, IMapper mapper)
+        public InterfaceWithDatabase(IStudioItemRepository studioItemRepository, IStudioItemTypeRepository studioItemTypeRepository, IMapper mapper)
         {
-            _dbContext = dbContext;
+            _studioItemRepository = studioItemRepository;
+            _studioItemTypeRepository = studioItemTypeRepository;
             _mapper = mapper;
         }
 
-        public async Task<ServiceResponse<List<GetStudioItemDto>>> AddStudioItem(AddStudioItemDto newStudioItem)
+        public async Task<ServiceResponse<GetStudioItemDto>> AddStudioItem(AddStudioItemDto newStudioItem)
         {
             StudioItem item = _mapper.Map<StudioItem>(newStudioItem);
-            await _dbContext.StudioItems.AddAsync(item);
-            await _dbContext.SaveChangesAsync();
+            await _studioItemRepository.AddAsync(item);
 
-            var serviceResponse = new ServiceResponse<List<GetStudioItemDto>>
+            var serviceResponse = new ServiceResponse<GetStudioItemDto>
             {
-                Data = await _dbContext.StudioItems.Select(c => _mapper.Map<GetStudioItemDto>(c)).ToListAsync(),
+                Data = _mapper.Map<GetStudioItemDto>(item),
                 Message = $"New item added.  Id: {item.StudioItemId}",
                 Success = true
             };
@@ -37,11 +35,13 @@ namespace AcmeStudios.ApiRefactor
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<List<GetStudioItemHeaderDto>>> GetAllStudioItemHeaders()
+        public async Task<ServiceResponse<IEnumerable<GetStudioItemHeaderDto>>> GetAllStudioItemHeaders()
         {
-            var serviceResponse = new ServiceResponse<List<GetStudioItemHeaderDto>>
+            var items = await _studioItemRepository.GetAllAsync();
+
+            var serviceResponse = new ServiceResponse<IEnumerable<GetStudioItemHeaderDto>>
             {
-                Data = await _dbContext.StudioItems.Select(c => _mapper.Map<GetStudioItemHeaderDto>(c)).ToListAsync(),
+                Data = _mapper.Map<IEnumerable<GetStudioItemHeaderDto>>(items),
                 Message = "Here's all the items in your studio",
                 Success = true
             };
@@ -51,10 +51,7 @@ namespace AcmeStudios.ApiRefactor
 
         public async Task<ServiceResponse<GetStudioItemDto>> GetStudioItemById(int id)
         {
-            var item = await _dbContext.StudioItems
-            .Where(item => item.StudioItemId == id)
-            .Include(type => type.StudioItemType)
-            .FirstOrDefaultAsync();
+            var item = await _studioItemRepository.GetByIdAsync(id);
 
             var serviceResponse = new ServiceResponse<GetStudioItemDto>
             {
@@ -69,64 +66,45 @@ namespace AcmeStudios.ApiRefactor
         {
             var serviceResponse = new ServiceResponse<GetStudioItemDto>();
 
-            StudioItem studioItem = await _dbContext.StudioItems
-                .FirstOrDefaultAsync(c => c.StudioItemId == updatedStudioItem.StudioItemId);
-            try
-            {
-                studioItem.Acquired = updatedStudioItem.Acquired;
-                studioItem.Description = updatedStudioItem.Description;
-                studioItem.Eurorack = updatedStudioItem.Eurorack;
-                studioItem.Name = updatedStudioItem.Name;
-                studioItem.Price = updatedStudioItem.Price;
-                studioItem.SerialNumber = updatedStudioItem.SerialNumber;
-                studioItem.Sold = updatedStudioItem.Sold;
-                studioItem.SoldFor = updatedStudioItem.SoldFor;
-                studioItem.StudioItemType = _mapper.Map<StudioItemType>(updatedStudioItem.StudioItemType);  // TODO this probably doesn't work
+            // TODO add whatever validation needs to take place here and return unsuccessful responses if so
 
+            var studioItem = _mapper.Map<StudioItem>(updatedStudioItem);
+
+            var successful = await _studioItemRepository.UpdateAsync(studioItem);
+
+            if (successful)
+            {
                 serviceResponse.Data = _mapper.Map<GetStudioItemDto>(studioItem);
                 serviceResponse.Message = "Update successful";
                 serviceResponse.Success = true;
             }
-            catch (Exception ex)
+            else
             {
                 serviceResponse.Success = false;
-                serviceResponse.Message = ex.Message;
-            }
-
-            _dbContext.StudioItems.Update(studioItem);
-            await _dbContext.SaveChangesAsync();
-
-            return serviceResponse;
-        }
-
-        public async Task<ServiceResponse<List<GetStudioItemDto>>> DeleteStudioItem(int id)
-        {
-            var serviceResponse = new ServiceResponse<List<GetStudioItemDto>>();
-
-            try
-            {
-                StudioItem item = await _dbContext.StudioItems.FirstAsync(c => c.StudioItemId == id);
-                _dbContext.Remove(item);
-                await _dbContext.SaveChangesAsync();
-
-                serviceResponse.Data = await _dbContext.StudioItems.Select(c => _mapper.Map<GetStudioItemDto>(c)).ToListAsync();
-                serviceResponse.Success = true;
-                serviceResponse.Message = "Item deleted";
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.Success = false;
-                serviceResponse.Message = ex.Message;
+                serviceResponse.Message = "Unexpected error";
             }
 
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<List<StudioItemType>>> GetAllStudioItemTypes()
+        public async Task<ServiceResponse<int>> DeleteStudioItem(int id)
         {
-            var serviceResponse = new ServiceResponse<List<StudioItemType>>
+            var serviceResponse = new ServiceResponse<int>();
+
+            var success = await _studioItemRepository.RemoveAsync(id);
+
+            serviceResponse.Data = success ? id : default;
+            serviceResponse.Success = success;
+            serviceResponse.Message = success ? "Item deleted" : "Unexpected error";
+
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<IEnumerable<StudioItemType>>> GetAllStudioItemTypes()
+        {
+            var serviceResponse = new ServiceResponse<IEnumerable<StudioItemType>>
             {
-                Data = await _dbContext.StudioItemTypes.OrderBy(s => s.Value).ToListAsync(),
+                Data = await _studioItemTypeRepository.GetAllAsync(),
                 Message = "Item types fetched",
                 Success = true
             };

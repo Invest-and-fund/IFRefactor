@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AcmeStudios.ApiRefactor.DataAccess.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AcmeStudios.ApiRefactor.DataAccess
@@ -7,6 +8,9 @@ namespace AcmeStudios.ApiRefactor.DataAccess
     {
         public static IServiceCollection AddRepositories(this IServiceCollection services, string dbConnectionString)
         {
+            services.AddScoped<IStudioItemRepository, StudioItemRepository>();
+            services.AddScoped<IStudioItemTypeRepository, StudioItemTypeRepository>();
+
             services.AddDbContext<Cont>(options =>
             {
                 options.UseSqlServer(dbConnectionString);
