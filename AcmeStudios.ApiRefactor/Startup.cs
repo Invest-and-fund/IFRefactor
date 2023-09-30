@@ -4,6 +4,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using AcemStudios.ApiRefactor.Data;
 
 namespace AcemStudios.ApiRefactor
 {
@@ -29,7 +31,21 @@ namespace AcemStudios.ApiRefactor
 
             services.AddControllers();
 
-            services.AddSwaggerGen();
+            services.AddDbContext<Cont>(options =>
+            {
+                var sqlConnectionString = Configuration.GetConnectionString("StudioConnection");
+                options.UseSqlServer(sqlConnectionString);
+            });
+
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "ACME Studios",
+                    Description = "Refactored API for the Invest and Fund technical test",
+                });
+            });
 
             services.AddAutoMapper(typeof(Startup));
         }
@@ -40,6 +56,14 @@ namespace AcemStudios.ApiRefactor
             {
                 app.UseDeveloperExceptionPage();                
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(options =>
+            {
+                // Endpoints are not versioned, so the API essentially only has v1 endpoints
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+                options.RoutePrefix = "swagger";
+            });
 
             app.UseStaticFiles();
 
