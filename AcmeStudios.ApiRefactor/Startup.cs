@@ -5,9 +5,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using AcemStudios.ApiRefactor.Data;
+using AcmeStudios.ApiRefactor.Data;
 
-namespace AcemStudios.ApiRefactor
+namespace AcmeStudios.ApiRefactor
 {
     public class Startup
     {

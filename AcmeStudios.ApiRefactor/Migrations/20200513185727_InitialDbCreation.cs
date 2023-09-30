@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace AcemStudios.Migrations
+namespace AcmeStudios.Migrations
 {
     public partial class InitialDbCreation : Migration
     {

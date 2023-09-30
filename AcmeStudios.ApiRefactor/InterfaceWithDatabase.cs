@@ -1,5 +1,5 @@
-﻿using AcemStudios.ApiRefactor.Data;
-using AcemStudios.ApiRefactor.DTOs;
+﻿using AcmeStudios.ApiRefactor.Data;
+using AcmeStudios.ApiRefactor.DTOs;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace AcemStudios.ApiRefactor
+namespace AcmeStudios.ApiRefactor
 {
     public class InterfaceWithDatabase
     {

@@ -1,8 +1,8 @@
-﻿using AcemStudios.ApiRefactor.DTOs;
+﻿using AcmeStudios.ApiRefactor.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
-namespace AcemStudios.ApiRefactor.Controllers
+namespace AcmeStudios.ApiRefactor.Controllers
 {
     [Route("peoplespartnership/api/[controller]")]
     [ApiController]

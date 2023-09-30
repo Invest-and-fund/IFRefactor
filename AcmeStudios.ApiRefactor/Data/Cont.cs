@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace AcemStudios.ApiRefactor.Data
+namespace AcmeStudios.ApiRefactor.Data
 {
     public class Cont : DbContext
     {
