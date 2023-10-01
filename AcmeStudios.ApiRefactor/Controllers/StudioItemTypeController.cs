@@ -16,7 +16,7 @@ namespace AcmeStudios.ApiRefactor.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetStudioItemTypes()
+        public async Task<IActionResult> Get()
         {
             return Ok(await _studioItemTypeService.GetAllStudioItemTypesAsync());
         }

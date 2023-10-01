@@ -16,7 +16,7 @@ namespace AcmeStudios.ApiRefactor.Controllers
             _studioItemService = studioItemService;
         }
 
-        [HttpGet("GetAll")]
+        [HttpGet]
         public async Task<IActionResult> Get()
         {
             return Ok(await _studioItemService.GetAllStudioItemHeadersAsync());
@@ -34,10 +34,14 @@ namespace AcmeStudios.ApiRefactor.Controllers
             return Ok(await _studioItemService.AddStudioItemAsync(studioItem));
         }
 
-        [HttpPut]
-        public async Task<IActionResult> Update(UpdateStudioItemDto studioItem)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, UpdateStudioItemDto studioItem)
         {
-            // TODO I probably want to include the ID in the request here and check that the ID's match
+            if (id != studioItem.StudioItemId)
+            {
+                return BadRequest("The Id's in the URL and the request body do not match");
+            }
+
             return Ok(await _studioItemService.UpdateStudioItemAsync(studioItem));
         }
 
