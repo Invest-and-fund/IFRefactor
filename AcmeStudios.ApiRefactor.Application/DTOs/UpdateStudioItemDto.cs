@@ -2,22 +2,43 @@
 
 namespace AcmeStudios.ApiRefactor.Application.DTOs
 {
-    public class UpdateStudioItemDto
+    public sealed class UpdateStudioItemDto
     {
-        public int StudioItemId { get; init; }
-        public DateTime Acquired { get; init; } = new DateTime(2020, 08, 04);
-        public DateTime? Sold { get; init; } = null;
-        [Required]
-        public string Name { get; init; } = "DSI Mopho x4";
-        [Required]
-        public string Description { get; init; } = "Dave Smith Instruments analog poly";
-        [Required]
-        public string SerialNumber { get; init; } = "123456";
-        public decimal Price { get; init; } = 10.00M;
-        public decimal SoldFor { get; init; } = 0M;
-        public bool Eurorack { get; init; } = false;
-        public StudioItemTypeDto StudioItemType { get; init; }
+        public UpdateStudioItemDto(int studioItemId, 
+            DateTime acquired, 
+            DateTime? sold, 
+            string name, 
+            string description, 
+            string serialNumber, 
+            bool eurorack, 
+            StudioItemTypeDto studioItemType,
+            decimal price = 10.00M,
+            decimal soldFor = 0M)
+        {
+            StudioItemId = studioItemId;
+            Acquired = acquired;
+            Sold = sold;
+            Name = name;
+            Description = description;
+            SerialNumber = serialNumber;
+            Price = price;
+            SoldFor = soldFor;
+            Eurorack = eurorack;
+            StudioItemType = studioItemType;
+        }
 
-        //public StudioItemImage StudioItemImage { get; set; }
+        public int StudioItemId { get; init; }
+        public DateTime Acquired { get; init; }
+        public DateTime? Sold { get; init; }
+        [Required]
+        public string Name { get; init; }
+        [Required]
+        public string Description { get; init; }
+        [Required]
+        public string SerialNumber { get; init; }
+        public decimal Price { get; init; }
+        public decimal SoldFor { get; init; }
+        public bool Eurorack { get; init; }
+        public StudioItemTypeDto StudioItemType { get; init; }
     }
 }

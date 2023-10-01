@@ -2,10 +2,27 @@
 {
     public class ServiceResponse<T>
     {
-        public T Data { get; set; }
+        public T? Data { get; private init; }
+        public bool Success { get; private init; }
+        public string Message { get; private init; } = string.Empty;
 
-        public bool Success { get; set; } = false;
+        public static ServiceResponse<T> Succeeded(T data, string message)
+        {
+            return new ServiceResponse<T>
+            {
+                Data = data,
+                Success = true,
+                Message = message
+            };
+        }
 
-        public string Message { get; set; } = null;
+        public static ServiceResponse<T> Failed(string message)
+        {
+            return new ServiceResponse<T>
+            {
+                Success = false,
+                Message = message
+            };
+        }
     }
 }

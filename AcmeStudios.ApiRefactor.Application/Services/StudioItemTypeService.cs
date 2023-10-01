@@ -1,9 +1,8 @@
 ﻿using AcmeStudios.ApiRefactor.Application.DTOs;
-using AcmeStudios.ApiRefactor.Application.Services;
 using AcmeStudios.ApiRefactor.DataAccess.Repositories;
 using AutoMapper;
 
-namespace AcmeStudios.ApiRefactor.Application
+namespace AcmeStudios.ApiRefactor.Application.Services
 {
     public sealed class StudioItemTypeService : IStudioItemTypeService
     {
@@ -20,14 +19,8 @@ namespace AcmeStudios.ApiRefactor.Application
         {
             var studioItems = await _studioItemTypeRepository.GetAllAsync();
 
-            var serviceResponse = new ServiceResponse<IEnumerable<StudioItemTypeDto>>
-            {
-                Data = _mapper.Map<IEnumerable<StudioItemTypeDto>>(studioItems),
-                Message = "Item types fetched",
-                Success = true
-            };
-
-            return serviceResponse;
+            return ServiceResponse<IEnumerable<StudioItemTypeDto>>
+                .Succeeded(_mapper.Map<IEnumerable<StudioItemTypeDto>>(studioItems), "Item types fetched");
         }
     }
 }
