@@ -31,7 +31,7 @@ namespace AcmeStudios.ApiRefactor.Application.Services
 
             return success 
                 ? ServiceResponse<int>.Succeeded(id, "Item deleted") 
-                : ServiceResponse<int>.Failed("Unexpected error");
+                : ServiceResponse<int>.Failed("An unexpected error occurred when trying to delete the studio item. Does it definitely exist?");
         }
 
         public async Task<ServiceResponse<IEnumerable<GetStudioItemHeaderDto>>> GetAllStudioItemHeadersAsync()
@@ -52,15 +52,13 @@ namespace AcmeStudios.ApiRefactor.Application.Services
 
         public async Task<ServiceResponse<GetStudioItemDto>> UpdateStudioItemAsync(UpdateStudioItemDto updatedStudioItem)
         {
-            // TODO add whatever validation needs to take place here and return unsuccessful responses if so
-
             var studioItem = _mapper.Map<StudioItem>(updatedStudioItem);
 
             var success = await _studioItemRepository.UpdateAsync(studioItem);
 
             return success 
                 ? ServiceResponse<GetStudioItemDto>.Succeeded(_mapper.Map<GetStudioItemDto>(studioItem), "Update Successful") 
-                : ServiceResponse<GetStudioItemDto>.Failed("Unexpected error");
+                : ServiceResponse<GetStudioItemDto>.Failed("An unexpected error occurred when trying to update the studio item. Does it definitely exist?");
         }
     }
 }

@@ -33,26 +33,30 @@ namespace AcmeStudios.ApiRefactor.DataAccess.Repositories
                 .FirstOrDefaultAsync();
         }
 
-        // TODO test updating an item that doesn't exist
         public async Task<bool> UpdateAsync(StudioItem itemToUpdate)
         {
+            bool exists = await _dbContext.StudioItems.AnyAsync(x => x.StudioItemId == itemToUpdate.StudioItemId);
+
+            if (!exists)
+            {
+                return false;
+            }
+
             _dbContext.StudioItems.Update(itemToUpdate);
             return await _dbContext.SaveChangesAsync() > 0;
         }
 
-        // TODO test deleting an item that doesn't exist
         public async Task<bool> RemoveAsync(int id)
         {
             var entryToDelete = await _dbContext.StudioItems.FirstOrDefaultAsync(e => e.StudioItemId == id);
-            var successful = false;
-
-            if (entryToDelete is not null)
+            
+            if (entryToDelete is null)
             {
-                _dbContext.StudioItems.Remove(entryToDelete);
-                successful = await _dbContext.SaveChangesAsync() > 0;
+                return false;
             }
 
-            return successful;
+            _dbContext.StudioItems.Remove(entryToDelete);
+            return await _dbContext.SaveChangesAsync() > 0;
         }
     }
 }
