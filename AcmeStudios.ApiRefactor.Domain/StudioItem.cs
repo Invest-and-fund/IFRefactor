@@ -8,18 +8,17 @@ namespace AcmeStudios.ApiRefactor.Domain
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int StudioItemId { get; init; }
         public DateTime Acquired { get; init; }
-        public DateTime? Sold { get; init; } = null;
+        public DateTime? Sold { get; init; }
         [Required]
-        public string Name { get; init; }
+        public string Name { get; init; } = string.Empty;
         [Required]
-        public string Description { get; init; }
-        [Required]
-        public string SerialNumber { get; init; }
-        public decimal Price { get; init; } //= 10.00M;
-        public decimal? SoldFor { get; init; } //= 0M;
-        public bool Eurorack { get; init; } //= false;
+        public string Description { get; init; } = string.Empty;
+        [Required] public string SerialNumber { get; init; } = string.Empty; 
+        public decimal Price { get; init; }
+        public decimal? SoldFor { get; init; }
+        public bool Eurorack { get; init; }
         [Required]
         public int StudioItemTypeId { get; init; }
-        public StudioItemType StudioItemType { get; init; }
+        public StudioItemType? StudioItemType { get; init; }
     }
 }

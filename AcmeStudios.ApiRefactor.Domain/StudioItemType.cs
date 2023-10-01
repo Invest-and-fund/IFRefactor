@@ -4,13 +4,13 @@ using System.Text.Json.Serialization;
 
 namespace AcmeStudios.ApiRefactor.Domain
 {
-    public class StudioItemType
+    public sealed class StudioItemType
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int StudioItemTypeId { get; init; }
         [Required]
-        public string Value { get; init; }
+        public string Value { get; init; } = string.Empty;
         [JsonIgnore]
-        public ICollection<StudioItem> StudioItem { get; init; }
+        public ICollection<StudioItem> StudioItem { get; init; } = new List<StudioItem>();
     }
 }
