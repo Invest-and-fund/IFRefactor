@@ -19,19 +19,22 @@ namespace AcmeStudios.ApiRefactor.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            return Ok(await _studioItemService.GetAllStudioItemHeadersAsync());
+            var result = await _studioItemService.GetAllStudioItemHeadersAsync();
+            return result.GetApiResponse();
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            return Ok(await _studioItemService.GetStudioItemByIdAsync(id));
+            var result = await _studioItemService.GetStudioItemByIdAsync(id);
+            return result.GetApiResponse();
         }
 
         [HttpPost]
         public async Task<IActionResult> Add(AddStudioItemDto studioItem)
         {
-            return Ok(await _studioItemService.AddStudioItemAsync(studioItem));
+            var result = await _studioItemService.AddStudioItemAsync(studioItem);
+            return result.GetApiResponse();
         }
 
         [HttpPut("{id}")]
@@ -42,13 +45,15 @@ namespace AcmeStudios.ApiRefactor.Controllers
                 return BadRequest("The Id's in the URL and the request body do not match");
             }
 
-            return Ok(await _studioItemService.UpdateStudioItemAsync(studioItem));
+            var result = await _studioItemService.UpdateStudioItemAsync(studioItem);
+            return result.GetApiResponse();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            return Ok(await _studioItemService.DeleteStudioItemAsync(id));
+            var result = await _studioItemService.DeleteStudioItemAsync(id);
+            return result.GetApiResponse();
         }
     }
 }
