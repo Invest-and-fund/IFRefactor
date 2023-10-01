@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace AcmeStudios.ApiRefactor.DataAccess.Migrations
 {
-    [DbContext(typeof(Cont))]
+    [DbContext(typeof(AcmeStudiosContext))]
     [Migration("20200513185727_InitialDbCreation")]
     partial class InitialDbCreation
     {

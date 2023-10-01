@@ -20,8 +20,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AcmeStudios.ApiRefactor.Application\AcmeStudios.ApiRefactor.Application.csproj" />
-    <ProjectReference Include="..\AcmeStudios.ApiRefactor.DataAccess\AcmeStudios.ApiRefactor.DataAccess.csproj" />
-    <ProjectReference Include="..\AcmeStudios.ApiRefactor.Domain\AcmeStudios.ApiRefactor.Domain.csproj" />
   </ItemGroup>
 
 

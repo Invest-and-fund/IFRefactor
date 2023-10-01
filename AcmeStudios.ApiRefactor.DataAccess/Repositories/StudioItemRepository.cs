@@ -5,11 +5,11 @@ namespace AcmeStudios.ApiRefactor.DataAccess.Repositories
 {
     internal sealed class StudioItemRepository : IStudioItemRepository
     {
-        private readonly Cont _dbContext;
+        private readonly AcmeStudiosContext _dbContext;
 
         private IQueryable<StudioItem> Query => _dbContext.StudioItems.Include(item => item.StudioItemType);
 
-        public StudioItemRepository(Cont dbContext)
+        public StudioItemRepository(AcmeStudiosContext dbContext)
         {
             _dbContext = dbContext;
         }

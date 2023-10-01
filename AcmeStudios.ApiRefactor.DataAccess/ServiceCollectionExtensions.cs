@@ -11,7 +11,7 @@ namespace AcmeStudios.ApiRefactor.DataAccess
             services.AddScoped<IStudioItemRepository, StudioItemRepository>();
             services.AddScoped<IStudioItemTypeRepository, StudioItemTypeRepository>();
 
-            services.AddDbContext<Cont>(options =>
+            services.AddDbContext<AcmeStudiosContext>(options =>
             {
                 options.UseSqlServer(dbConnectionString);
             });

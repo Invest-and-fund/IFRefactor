@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AcmeStudios.ApiRefactor.DataAccess.Migrations
 {
-    [DbContext(typeof(Cont))]
+    [DbContext(typeof(AcmeStudiosContext))]
     partial class StudioContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

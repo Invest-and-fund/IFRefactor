@@ -3,11 +3,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AcmeStudios.ApiRefactor.DataAccess
 {
-    public class Cont : DbContext
+    public class AcmeStudiosContext : DbContext
     {
-        public DbSet<StudioItem> StudioItems { get; set; }
-        public DbSet<StudioItemType> StudioItemTypes { get; set; }
-        public Cont(DbContextOptions<Cont> options) : base(options) { }
+        public DbSet<StudioItem> StudioItems => Set<StudioItem>();
+        public DbSet<StudioItemType> StudioItemTypes => Set<StudioItemType>();
+        public AcmeStudiosContext(DbContextOptions<AcmeStudiosContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

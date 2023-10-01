@@ -5,9 +5,9 @@ namespace AcmeStudios.ApiRefactor.DataAccess.Repositories
 {
     internal sealed class StudioItemTypeRepository : IStudioItemTypeRepository
     {
-        private readonly Cont _dbContext;
+        private readonly AcmeStudiosContext _dbContext;
 
-        public StudioItemTypeRepository(Cont dbContext)
+        public StudioItemTypeRepository(AcmeStudiosContext dbContext)
         {
             _dbContext = dbContext;
         }
