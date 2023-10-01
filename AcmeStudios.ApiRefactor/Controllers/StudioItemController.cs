@@ -7,15 +7,13 @@ namespace AcmeStudios.ApiRefactor.Controllers
 {
     [Route("peoplespartnership/api/[controller]")]
     [ApiController]
-    public sealed class AnController : ControllerBase
+    public sealed class StudioItemController : ControllerBase
     {
         private readonly IStudioItemService _studioItemService;
-        private readonly IStudioItemTypeService _studioItemTypeService;
 
-        public AnController(IStudioItemService studioItemService, IStudioItemTypeService studioItemTypeService)
+        public StudioItemController(IStudioItemService studioItemService)
         {
             _studioItemService = studioItemService;
-            _studioItemTypeService = studioItemTypeService;
         }
 
         [HttpGet("GetAll")]
@@ -47,12 +45,6 @@ namespace AcmeStudios.ApiRefactor.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             return Ok(await _studioItemService.DeleteStudioItemAsync(id));
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetStudioItemTypes()
-        {
-            return Ok(await _studioItemTypeService.GetAllStudioItemTypesAsync());
         }
     }
 }
