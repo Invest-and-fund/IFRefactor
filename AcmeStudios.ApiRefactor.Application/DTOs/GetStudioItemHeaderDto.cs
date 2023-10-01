@@ -17,8 +17,6 @@ namespace AcmeStudios.ApiRefactor.Application.DTOs
         [Required]
         public string Name { get; init; }
         [Required]
-        public string Description { get; init; }        
-
-        
+        public string Description { get; init; }           
     }
 }
