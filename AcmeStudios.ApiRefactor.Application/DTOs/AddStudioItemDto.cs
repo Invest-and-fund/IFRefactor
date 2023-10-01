@@ -1,7 +1,6 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace AcmeStudios.ApiRefactor.DTOs
+namespace AcmeStudios.ApiRefactor.Application.DTOs
 {
     public class AddStudioItemDto
     {

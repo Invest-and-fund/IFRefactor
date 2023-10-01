@@ -1,4 +1,4 @@
-﻿namespace AcmeStudios.ApiRefactor.DTOs
+﻿namespace AcmeStudios.ApiRefactor.Application.DTOs
 {
     public class StudioItemTypeDto
     {

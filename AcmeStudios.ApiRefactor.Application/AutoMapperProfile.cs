@@ -1,8 +1,8 @@
-﻿using AcmeStudios.ApiRefactor.Domain;
-using AcmeStudios.ApiRefactor.DTOs;
+﻿using AcmeStudios.ApiRefactor.Application.DTOs;
+using AcmeStudios.ApiRefactor.Domain;
 using AutoMapper;
 
-namespace AcmeStudios.ApiRefactor
+namespace AcmeStudios.ApiRefactor.Application
 {
     public class AutoMapperProfile : Profile
     {

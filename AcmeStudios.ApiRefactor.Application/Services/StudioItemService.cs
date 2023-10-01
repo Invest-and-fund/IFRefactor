@@ -1,28 +1,24 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using AcmeStudios.ApiRefactor.Application.DTOs;
 using AcmeStudios.ApiRefactor.DataAccess.Repositories;
 using AcmeStudios.ApiRefactor.Domain;
-using AcmeStudios.ApiRefactor.DTOs;
 using AutoMapper;
 
-namespace AcmeStudios.ApiRefactor
+namespace AcmeStudios.ApiRefactor.Application.Services
 {
-    public class InterfaceWithDatabase
+    public sealed class StudioItemService : IStudioItemService
     {
         private readonly IStudioItemRepository _studioItemRepository;
-        private readonly IStudioItemTypeRepository _studioItemTypeRepository;
         private readonly IMapper _mapper;
 
-        public InterfaceWithDatabase(IStudioItemRepository studioItemRepository, IStudioItemTypeRepository studioItemTypeRepository, IMapper mapper)
+        public StudioItemService(IStudioItemRepository studioItemRepository, IMapper mapper)
         {
             _studioItemRepository = studioItemRepository;
-            _studioItemTypeRepository = studioItemTypeRepository;
             _mapper = mapper;
         }
 
-        public async Task<ServiceResponse<GetStudioItemDto>> AddStudioItem(AddStudioItemDto newStudioItem)
+        public async Task<ServiceResponse<GetStudioItemDto>> AddStudioItemAsync(AddStudioItemDto newStudioItem)
         {
-            StudioItem item = _mapper.Map<StudioItem>(newStudioItem);
+            var item = _mapper.Map<StudioItem>(newStudioItem);
             await _studioItemRepository.AddAsync(item);
 
             var serviceResponse = new ServiceResponse<GetStudioItemDto>
@@ -35,7 +31,20 @@ namespace AcmeStudios.ApiRefactor
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<IEnumerable<GetStudioItemHeaderDto>>> GetAllStudioItemHeaders()
+        public async Task<ServiceResponse<int>> DeleteStudioItemAsync(int id)
+        {
+            var serviceResponse = new ServiceResponse<int>();
+
+            var success = await _studioItemRepository.RemoveAsync(id);
+
+            serviceResponse.Data = success ? id : default;
+            serviceResponse.Success = success;
+            serviceResponse.Message = success ? "Item deleted" : "Unexpected error";
+
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<IEnumerable<GetStudioItemHeaderDto>>> GetAllStudioItemHeadersAsync()
         {
             var items = await _studioItemRepository.GetAllAsync();
 
@@ -49,7 +58,7 @@ namespace AcmeStudios.ApiRefactor
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<GetStudioItemDto>> GetStudioItemById(int id)
+        public async Task<ServiceResponse<GetStudioItemDto>> GetStudioItemByIdAsync(int id)
         {
             var item = await _studioItemRepository.GetByIdAsync(id);
 
@@ -59,10 +68,11 @@ namespace AcmeStudios.ApiRefactor
                 Message = "Here's your selected studio item",
                 Success = true
             };
+
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<GetStudioItemDto>> UpdateStudioItem(UpdateStudioItemDto updatedStudioItem)
+        public async Task<ServiceResponse<GetStudioItemDto>> UpdateStudioItemAsync(UpdateStudioItemDto updatedStudioItem)
         {
             var serviceResponse = new ServiceResponse<GetStudioItemDto>();
 
@@ -86,40 +96,5 @@ namespace AcmeStudios.ApiRefactor
 
             return serviceResponse;
         }
-
-        public async Task<ServiceResponse<int>> DeleteStudioItem(int id)
-        {
-            var serviceResponse = new ServiceResponse<int>();
-
-            var success = await _studioItemRepository.RemoveAsync(id);
-
-            serviceResponse.Data = success ? id : default;
-            serviceResponse.Success = success;
-            serviceResponse.Message = success ? "Item deleted" : "Unexpected error";
-
-            return serviceResponse;
-        }
-
-        public async Task<ServiceResponse<IEnumerable<StudioItemType>>> GetAllStudioItemTypes()
-        {
-            var serviceResponse = new ServiceResponse<IEnumerable<StudioItemType>>
-            {
-                Data = await _studioItemTypeRepository.GetAllAsync(),
-                Message = "Item types fetched",
-                Success = true
-            };
-
-            return serviceResponse;
-        }
     }
-
-    public class ServiceResponse<T>
-    {
-        public T Data { get; set; }
-
-        public bool Success { get; set; } = false;
-
-        public string Message { get; set; } = null;
-    }
-
 }

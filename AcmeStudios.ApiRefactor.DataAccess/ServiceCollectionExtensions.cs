@@ -6,7 +6,7 @@ namespace AcmeStudios.ApiRefactor.DataAccess
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddRepositories(this IServiceCollection services, string dbConnectionString)
+        public static IServiceCollection AddDataAccessLayer(this IServiceCollection services, string dbConnectionString)
         {
             services.AddScoped<IStudioItemRepository, StudioItemRepository>();
             services.AddScoped<IStudioItemTypeRepository, StudioItemTypeRepository>();

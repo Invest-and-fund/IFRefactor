@@ -1,3 +1,4 @@
+using AcmeStudios.ApiRefactor.Application;
 using AcmeStudios.ApiRefactor.DataAccess;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
@@ -31,11 +32,9 @@ namespace AcmeStudios.ApiRefactor
 
             services.AddControllers();
 
-            services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
+            services.AddApplicationLayer();
             var sqlConnectionString = Configuration.GetConnectionString("StudioConnection");
-            services.AddRepositories(sqlConnectionString);
-
-            services.AddTransient<InterfaceWithDatabase>();
+            services.AddDataAccessLayer(sqlConnectionString);
 
             services.AddSwaggerGen(options =>
             {
