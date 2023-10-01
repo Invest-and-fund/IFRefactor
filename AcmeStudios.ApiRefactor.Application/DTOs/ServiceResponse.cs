@@ -1,6 +1,6 @@
 ﻿namespace AcmeStudios.ApiRefactor.Application.DTOs
 {
-    public class ServiceResponse<T>
+    public sealed class ServiceResponse<T>
     {
         public T? Data { get; private init; }
         public bool Success { get; private init; }

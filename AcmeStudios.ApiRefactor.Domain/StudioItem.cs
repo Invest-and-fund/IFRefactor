@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AcmeStudios.ApiRefactor.Domain
 {
-    public class StudioItem
+    public sealed class StudioItem
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int StudioItemId { get; init; }

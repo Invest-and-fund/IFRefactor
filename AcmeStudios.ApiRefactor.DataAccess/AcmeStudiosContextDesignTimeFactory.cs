@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace AcmeStudios.ApiRefactor.DataAccess
 {
-    public class AcmeStudiosContextDesignTimeFactory : IDesignTimeDbContextFactory<AcmeStudiosContext>
+    internal sealed class AcmeStudiosContextDesignTimeFactory : IDesignTimeDbContextFactory<AcmeStudiosContext>
     {
         public AcmeStudiosContext CreateDbContext(string[] args)
         {
