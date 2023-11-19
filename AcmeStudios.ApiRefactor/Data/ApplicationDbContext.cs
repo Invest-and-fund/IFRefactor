@@ -1,12 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using AcmeStudios.ApiRefactor.Models;
 
 namespace AcemStudios.ApiRefactor.Data
 {
-    public class Cont : DbContext
+    public class ApplicationDbContext : DbContext
     {
         public DbSet<StudioItem> StudioItems { get; set; }
         public DbSet<StudioItemType> StudioItemTypes { get; set; }
-        public Cont(DbContextOptions<Cont> options) : base(options) { }
+
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -26,4 +28,5 @@ namespace AcemStudios.ApiRefactor.Data
             );
         }
     }
+
 }

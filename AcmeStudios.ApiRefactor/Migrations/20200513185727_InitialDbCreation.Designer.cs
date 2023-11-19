@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace AcemStudios.Migrations
 {
-    [DbContext(typeof(Cont))]
+    [DbContext(typeof(ApplicationDbContext))]
     [Migration("20200513185727_InitialDbCreation")]
     partial class InitialDbCreation
     {
