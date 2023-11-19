@@ -4,10 +4,13 @@ using AcemStudios.ApiRefactor.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+
+#nullable disable
 
 namespace AcemStudios.Migrations
 {
-    [DbContext(typeof(Cont))]
+    [DbContext(typeof(ApplicationDbContext))]
     partial class StudioContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
@@ -15,15 +18,17 @@ namespace AcemStudios.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.3")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
             modelBuilder.Entity("Api.Models.Character", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("Defense")
                         .HasColumnType("int");
@@ -45,15 +50,16 @@ namespace AcemStudios.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Characters");
+                    b.ToTable("Characters", (string)null);
                 });
 
             modelBuilder.Entity("Api.Models.StudioItem", b =>
                 {
                     b.Property<int>("StudioItemId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StudioItemId"), 1L, 1);
 
                     b.Property<DateTime>("Acquired")
                         .HasColumnType("datetime2");
@@ -89,15 +95,16 @@ namespace AcemStudios.Migrations
 
                     b.HasIndex("StudioItemTypeId");
 
-                    b.ToTable("StudioItems");
+                    b.ToTable("StudioItems", (string)null);
                 });
 
             modelBuilder.Entity("Api.Models.StudioItemImage", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<byte[]>("FileData")
                         .HasColumnType("varbinary(max)");
@@ -112,15 +119,16 @@ namespace AcemStudios.Migrations
 
                     b.HasIndex("StudioItemId");
 
-                    b.ToTable("StudioItemImages");
+                    b.ToTable("StudioItemImages", (string)null);
                 });
 
             modelBuilder.Entity("Api.Models.StudioItemType", b =>
                 {
                     b.Property<int>("StudioItemTypeId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StudioItemTypeId"), 1L, 1);
 
                     b.Property<string>("Value")
                         .IsRequired()
@@ -128,7 +136,7 @@ namespace AcemStudios.Migrations
 
                     b.HasKey("StudioItemTypeId");
 
-                    b.ToTable("StudioItemTypes");
+                    b.ToTable("StudioItemTypes", (string)null);
 
                     b.HasData(
                         new
@@ -175,6 +183,8 @@ namespace AcemStudios.Migrations
                         .HasForeignKey("StudioItemTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("StudioItemType");
                 });
 
             modelBuilder.Entity("Api.Models.StudioItemImage", b =>
@@ -182,6 +192,18 @@ namespace AcemStudios.Migrations
                     b.HasOne("Api.Models.StudioItem", "StudioItem")
                         .WithMany("StudioItemImage")
                         .HasForeignKey("StudioItemId");
+
+                    b.Navigation("StudioItem");
+                });
+
+            modelBuilder.Entity("Api.Models.StudioItem", b =>
+                {
+                    b.Navigation("StudioItemImage");
+                });
+
+            modelBuilder.Entity("Api.Models.StudioItemType", b =>
+                {
+                    b.Navigation("StudioItem");
                 });
 #pragma warning restore 612, 618
         }
