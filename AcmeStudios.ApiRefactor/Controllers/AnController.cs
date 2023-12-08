@@ -13,52 +13,44 @@ namespace AcemStudios.ApiRefactor.Controllers
 
         }
 
+        DatabaseService databaseService = new DatabaseService();
+
         [HttpGet("GetAll")]
         public async Task<IActionResult> Get()
         {
-            InterfaceWithDatabase _iwd = new InterfaceWithDatabase();
-
-            return Ok(await _iwd.GetAllStudioHeaderItems());
+            return Ok(await databaseService.GetAllStudioHeaderItems());
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            InterfaceWithDatabase _iwd = new InterfaceWithDatabase();
-
-            return Ok(await _iwd.GetStudioItemById(id));
+            return Ok(await databaseService.GetStudioItemById(id));
         }
 
         [HttpPost]
         public async Task<IActionResult> Add(AddStudioItemDto studioItem)
         {
-            InterfaceWithDatabase _iwd = new InterfaceWithDatabase();
 
-            return Ok(await _iwd.AddStudioItem(studioItem));
+            return Ok(await databaseService.AddStudioItem(studioItem));
         }
 
         [HttpPut]
         public async Task<IActionResult> Update(UpdateStudioItemDto studioItem)
         {
-            InterfaceWithDatabase _iwd = new InterfaceWithDatabase();
-
-            return Ok(await _iwd.UpdateStudioItem(studioItem));
+            return Ok(await databaseService.UpdateStudioItem(studioItem));
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            InterfaceWithDatabase _iwd = new InterfaceWithDatabase();
-
-            return Ok(await _iwd.DeleteStudioItem(id));
+            return Ok(await databaseService.DeleteStudioItem(id));
         }
 
         [HttpGet]
         public async Task<IActionResult> GetStudioItemTypes()
         {
-            InterfaceWithDatabase _iwd = new InterfaceWithDatabase();
 
-            return Ok(await _iwd.GetAllStudioItemTypes());
+            return Ok(await databaseService.GetAllStudioItemTypes());
         }
     }
 }

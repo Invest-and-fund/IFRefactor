@@ -1,12 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using AcemStudios.ApiRefactor.Database.Models;
 
-namespace AcemStudios.ApiRefactor.Data
+namespace AcemStudios.ApiRefactor.Database.Context
 {
-    public class Cont : DbContext
+    public class Context : DbContext
     {
         public DbSet<StudioItem> StudioItems { get; set; }
         public DbSet<StudioItemType> StudioItemTypes { get; set; }
-        public Cont(DbContextOptions<Cont> options) : base(options) { }
+        public Context(DbContextOptions<Context> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
