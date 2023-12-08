@@ -4,17 +4,28 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using AutoMapper;
+using System.IO;
 
 namespace AcemStudios.ApiRefactor
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup()
         {
-            Configuration = configuration;
+            IConfigurationBuilder builder = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile(jsonFile, false, true);
+
+            var config = builder.Build();
+
+            ApiConfigurationSettings = config.GetSection("ApiConfigurationSettings").Get<ApiConfigurationSettings>();
         }
 
         public IConfiguration Configuration { get; }
+
+        public static ApiConfigurationSettings ApiConfigurationSettings { get; private set; }
+
+        public static readonly string jsonFile = "appsettings.json";
 
         public void ConfigureServices(IServiceCollection services)
         {
