@@ -15,11 +15,11 @@ namespace AcemStudios.ApiRefactor
 {
     public class InterfaceWithDatabase
     {
-        private readonly Cont _cont;
+        private readonly DatabaseContext _cont;
         private readonly IMapper _mapper;
         private readonly DatabaseConfiguration _databaseConfiguration;
 
-        public InterfaceWithDatabase(Cont cont, IMapper mapper, DatabaseConfiguration databaseConfiguration)
+        public InterfaceWithDatabase(DatabaseContext cont, IMapper mapper, DatabaseConfiguration databaseConfiguration)
         {
             _cont = cont;
             _mapper = mapper;
@@ -39,9 +39,8 @@ namespace AcemStudios.ApiRefactor
                 Message = $"New item added.  Id: {item.StudioItemId}",
                 Success = true
             };
-
-            return serviceResponse;
         
+            return serviceResponse;
         }
     
 

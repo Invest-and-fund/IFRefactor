@@ -11,16 +11,14 @@ namespace AcemStudios.ApiRefactor
         public DatabaseConfiguration(IConfiguration configuration)
         {
             _configuration = configuration;
-        }
 
-        public DbContextOptions<Cont> GetDbContextOptions()
-        {
             string conn = _configuration.GetConnectionString("StudioConnection");
 
-            var optionsBuilder = new DbContextOptionsBuilder<Cont>();
+            var optionsBuilder = new DbContextOptionsBuilder<DatabaseContext>();
             optionsBuilder.UseSqlServer(conn);
 
-            return optionsBuilder.Options;
         }
+
     }
 }
+

@@ -24,7 +24,7 @@ namespace AcemStudios.ApiRefactor
             services.AddCors(options =>
             {
                  options.AddPolicy("AllowMyOrigin",
-            builder => builder.WithOrigins("http://localhost:4200")
+            builder => builder.WithOrigins("https://host.docker.internal:1433")
             .AllowAnyHeader()
             .AllowAnyMethod()
             );
@@ -40,9 +40,9 @@ namespace AcemStudios.ApiRefactor
             services.AddAutoMapper(typeof(Startup));
 
             services.AddScoped<InterfaceWithDatabase>();
-            services.AddScoped<DatabaseConfiguration>();
+            services.AddSingleton<DatabaseConfiguration>();
 
-            services.AddDbContext<Cont>(options =>
+            services.AddDbContext<DatabaseContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("StudioConnection"));
             });

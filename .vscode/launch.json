@@ -10,9 +10,9 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/bin/Debug/net6.0-windows/AcmeStudios.ApiRefactor.dll",
+            "program": "${workspaceFolder}/AcmeStudios.ApiRefactor/bin/Debug/net6.0-windows/AcmeStudios.ApiRefactor.dll",
             "args": [],
-            "cwd": "${workspaceFolder}",
+            "cwd": "${workspaceFolder}/AcmeStudios.ApiRefactor",
             "stopAtEntry": false,
             // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
             "serverReadyAction": {
@@ -25,21 +25,17 @@
             "sourceFileMap": {
                 "/Views": "${workspaceFolder}/Views"
             },
-
-         
+            "justMyCode": false,
+            "symbolOptions": {
+                "searchPaths": [],
+                "searchMicrosoftSymbolServer": true,
+                "searchNuGetOrgSymbolServer": false
+            }
         },
         {
             "name": ".NET Core Attach",
             "type": "coreclr",
             "request": "attach"
-        },
-        {
-            "name": "Launch",
-            "type": "coreclr",
-            "request": "launch",
-            "program": "${workspaceFolder}/bin/Debug/net6.0-windows/AcmeStudios.ApiRefactor",
-            "launchSettingsFilePath": "${workspaceFolder}/Properties/launchSettings.json"
-            ,"launchSettingsProfile": "Api"
         }
     ]
 }
