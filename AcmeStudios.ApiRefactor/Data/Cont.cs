@@ -1,12 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace AcemStudios.ApiRefactor.Data
 {
-    public class Cont : DbContext
+    public class DatabaseContext : DbContext
     {
         public DbSet<StudioItem> StudioItems { get; set; }
         public DbSet<StudioItemType> StudioItemTypes { get; set; }
-        public Cont(DbContextOptions<Cont> options) : base(options) { }
+        public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -24,6 +25,13 @@ namespace AcemStudios.ApiRefactor.Data
             new StudioItemType { StudioItemTypeId = 6, Value = "Oscillator" },
             new StudioItemType { StudioItemTypeId = 7, Value = "Utility" }
             );
+
+            foreach (var property in modelBuilder.Model.GetEntityTypes()
+            .SelectMany(t => t.GetProperties())
+            .Where(p => p.ClrType == typeof(decimal) || p.ClrType == typeof(decimal?)))
+            {   
+              property.SetColumnType("decimal(18,2)");
+            }
         }
     }
 }

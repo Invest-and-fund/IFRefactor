@@ -1,4 +1,8 @@
+using System.Linq;
+using AcemStudios.ApiRefactor.Data;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace AcemStudios.ApiRefactor
@@ -7,8 +11,12 @@ namespace AcemStudios.ApiRefactor
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+        
 
+            var app = CreateHostBuilder(args).Build();
+    
+            app.Run();
+            
 
         }
 

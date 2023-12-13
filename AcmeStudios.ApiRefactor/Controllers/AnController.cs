@@ -8,57 +8,50 @@ namespace AcemStudios.ApiRefactor.Controllers
     [ApiController]
     public class AnController : ControllerBase
     {
-        public AnController()
-        {
+        private InterfaceWithDatabase iwd;
 
+        public AnController(InterfaceWithDatabase iwd)
+        {
+            this.iwd = iwd;
         }
 
         [HttpGet("GetAll")]
         public async Task<IActionResult> Get()
         {
-            InterfaceWithDatabase _iwd = new InterfaceWithDatabase();
-
-            return Ok(await _iwd.GetAllStudioHeaderItems());
+            return Ok(await iwd.GetAllStudioHeaderItems());
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            InterfaceWithDatabase _iwd = new InterfaceWithDatabase();
 
-            return Ok(await _iwd.GetStudioItemById(id));
+            return Ok(await iwd.GetStudioItemById(id));
         }
 
         [HttpPost]
         public async Task<IActionResult> Add(AddStudioItemDto studioItem)
         {
-            InterfaceWithDatabase _iwd = new InterfaceWithDatabase();
-
-            return Ok(await _iwd.AddStudioItem(studioItem));
+            return Ok(await iwd.AddStudioItem(studioItem));
         }
 
         [HttpPut]
         public async Task<IActionResult> Update(UpdateStudioItemDto studioItem)
         {
-            InterfaceWithDatabase _iwd = new InterfaceWithDatabase();
 
-            return Ok(await _iwd.UpdateStudioItem(studioItem));
+            return Ok(await iwd.UpdateStudioItem(studioItem));
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            InterfaceWithDatabase _iwd = new InterfaceWithDatabase();
 
-            return Ok(await _iwd.DeleteStudioItem(id));
+            return Ok(await iwd.DeleteStudioItem(id));
         }
 
         [HttpGet]
         public async Task<IActionResult> GetStudioItemTypes()
         {
-            InterfaceWithDatabase _iwd = new InterfaceWithDatabase();
-
-            return Ok(await _iwd.GetAllStudioItemTypes());
+            return Ok(await iwd.GetAllStudioItemTypes());
         }
     }
 }

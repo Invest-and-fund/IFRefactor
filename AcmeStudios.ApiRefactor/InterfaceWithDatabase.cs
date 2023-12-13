@@ -1,82 +1,52 @@
-﻿using AcemStudios.ApiRefactor.Data;
-using AcemStudios.ApiRefactor.DTOs;
-using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using AcemStudios.ApiRefactor.Data;
+using AcemStudios.ApiRefactor.DTOs;
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace AcemStudios.ApiRefactor
 {
     public class InterfaceWithDatabase
     {
-        public InterfaceWithDatabase()
-        {
+        private readonly DatabaseContext _cont;
+        private readonly IMapper _mapper;
+        private readonly DatabaseConfiguration _databaseConfiguration;
 
+        public InterfaceWithDatabase(DatabaseContext cont, IMapper mapper, DatabaseConfiguration databaseConfiguration)
+        {
+            _cont = cont;
+            _mapper = mapper;
+            _databaseConfiguration = databaseConfiguration;
         }
 
         public async Task<ServiceResponse<List<GetStudioItemDto>>> AddStudioItem(AddStudioItemDto newStudioItem)
         {
-            IConfigurationBuilder builder = new ConfigurationBuilder().AddJsonFile("appsettings.json", false, true);
 
-            IConfigurationRoot configuration = builder.Build();
+            StudioItem item = _mapper.Map<StudioItem>(newStudioItem);
+            await _cont.StudioItems.AddAsync(item);
+            await _cont.SaveChangesAsync();
 
-            string conn = configuration.GetConnectionString("StudioConnection");
-
-            var optionsBuilder = new DbContextOptionsBuilder<Cont>();
-            optionsBuilder.UseSqlServer(conn);
-
-
-            using (Cont _cont = new Cont(optionsBuilder.Options))
+            var serviceResponse = new ServiceResponse<List<GetStudioItemDto>>
             {
-                var config = new MapperConfiguration(cfg =>
-                {
-                    cfg.AddProfile<AutoMapperProfile>();
-                });
-
-                var _mapper = config.CreateMapper();
-
-                StudioItem item = _mapper.Map<StudioItem>(newStudioItem);
-                await _cont.StudioItems.AddAsync(item);
-                await _cont.SaveChangesAsync();
-
-                var serviceResponse = new ServiceResponse<List<GetStudioItemDto>>
-                {
-                    Data = await _cont.StudioItems.Select(c => _mapper.Map<GetStudioItemDto>(c)).ToListAsync(),
-                    Message = $"New item added.  Id: {item.StudioItemId}",
-                    Success = true
-                };
-
-                return serviceResponse;
-            }
+                Data = await _cont.StudioItems.Select(c => _mapper.Map<GetStudioItemDto>(c)).ToListAsync(),
+                Message = $"New item added.  Id: {item.StudioItemId}",
+                Success = true
+            };
+        
+            return serviceResponse;
         }
+    
+
 
         public async Task<ServiceResponse<List<GetStudioItemHeaderDto>>> GetAllStudioHeaderItems()
         {
-
-            IConfigurationBuilder builder = new ConfigurationBuilder().AddJsonFile("appsettings.json", false, true);
-
-            IConfigurationRoot configuration = builder.Build();
-
-            string conn = configuration.GetConnectionString("StudioConnection");
-
-            var optionsBuilder = new DbContextOptionsBuilder<Cont>();
-            optionsBuilder.UseSqlServer(conn);
-
-            using (Cont _cont = new Cont(optionsBuilder.Options))
-            {
-                var config = new MapperConfiguration(cfg =>
-                {
-                    cfg.AddProfile<AutoMapperProfile>();
-                });
-
-                var _mapper = config.CreateMapper();
-
                 var serviceResponse = new ServiceResponse<List<GetStudioItemHeaderDto>>
                 {
                     Data = await _cont.StudioItems.Select(c => _mapper.Map<GetStudioItemHeaderDto>(c)).ToListAsync(),
@@ -85,65 +55,33 @@ namespace AcemStudios.ApiRefactor
                 };
 
                 return serviceResponse;
-            }
         }
 
         public async Task<ServiceResponse<GetStudioItemDto>> GetStudioItemById(int id)
         {
-            IConfigurationBuilder builder = new ConfigurationBuilder().AddJsonFile("appsettings.json", false, true);
 
-            IConfigurationRoot configuration = builder.Build();
+            var item = await _cont.StudioItems
+            .Where(item => item.StudioItemId == id)
+            .Include(type => type.StudioItemType)
+            .FirstOrDefaultAsync();
 
-            string conn = configuration.GetConnectionString("StudioConnection");
-
-            var optionsBuilder = new DbContextOptionsBuilder<Cont>();
-            optionsBuilder.UseSqlServer(conn);
-
-            using (Cont _cont = new Cont(optionsBuilder.Options))
+            var serviceResponse = new ServiceResponse<GetStudioItemDto>
             {
-                var config = new MapperConfiguration(cfg =>
-                {
-                    cfg.AddProfile<AutoMapperProfile>();
-                });
-
-                var _mapper = config.CreateMapper();
-                var item = await _cont.StudioItems
-                .Where(item => item.StudioItemId == id)
-                .Include(type => type.StudioItemType)
-                .FirstOrDefaultAsync();
-
-                var serviceResponse = new ServiceResponse<GetStudioItemDto>
-                {
-                    Data = _mapper.Map<GetStudioItemDto>(item),
-                    Message = "Here's your selected studio item",
-                    Success = true
-                };
-                return serviceResponse;
-            }
+                Data = _mapper.Map<GetStudioItemDto>(item),
+                Message = "Here's your selected studio item",
+                Success = true
+            };
+            return serviceResponse;
+        
         }
 
         public async Task<ServiceResponse<GetStudioItemDto>> UpdateStudioItem(UpdateStudioItemDto updatedStudioItem)
         {
-            IConfigurationBuilder builder = new ConfigurationBuilder().AddJsonFile("appsettings.json", false, true);
 
-            IConfigurationRoot configuration = builder.Build();
-
-            string conn = configuration.GetConnectionString("StudioConnection");
-
-            var optionsBuilder = new DbContextOptionsBuilder<Cont>();
-            optionsBuilder.UseSqlServer(conn);
-
-            using (Cont _cont = new Cont(optionsBuilder.Options))
-            {
-                var config = new MapperConfiguration(cfg =>
-                {
-                    cfg.AddProfile<AutoMapperProfile>();
-                });
                 var serviceResponse = new ServiceResponse<GetStudioItemDto>();
 
                 StudioItem studioItem = await _cont.StudioItems
                     .FirstOrDefaultAsync(c => c.StudioItemId == updatedStudioItem.StudioItemId);
-                var _mapper = config.CreateMapper();
                 try
                 {
                     studioItem.Acquired = updatedStudioItem.Acquired;
@@ -170,28 +108,11 @@ namespace AcemStudios.ApiRefactor
                 await _cont.SaveChangesAsync();
 
                 return serviceResponse;
-            }
+            
         }
 
         public async Task<ServiceResponse<List<GetStudioItemDto>>> DeleteStudioItem(int id)
         {
-            IConfigurationBuilder builder = new ConfigurationBuilder().AddJsonFile("appsettings.json", false, true);
-
-            IConfigurationRoot configuration = builder.Build();
-
-            string conn = configuration.GetConnectionString("StudioConnection");
-
-            var optionsBuilder = new DbContextOptionsBuilder<Cont>();
-            optionsBuilder.UseSqlServer(conn);
-
-            using (Cont _cont = new Cont(optionsBuilder.Options))
-            {
-                var config = new MapperConfiguration(cfg =>
-                {
-                    cfg.AddProfile<AutoMapperProfile>();
-                });
-
-                var _mapper = config.CreateMapper();
                 var serviceResponse = new ServiceResponse<List<GetStudioItemDto>>();
 
                 try
@@ -211,37 +132,26 @@ namespace AcemStudios.ApiRefactor
                 }
 
                 return serviceResponse;
-            }
+            
         }
 
         public async Task<ServiceResponse<List<StudioItemType>>> GetAllStudioItemTypes()
         {
-            IConfigurationBuilder builder = new ConfigurationBuilder().AddJsonFile("appsettings.json", false, true);
-
-            IConfigurationRoot configuration = builder.Build();
-
-            string conn = configuration.GetConnectionString("StudioConnection");
-
-            var optionsBuilder = new DbContextOptionsBuilder<Cont>();
-            optionsBuilder.UseSqlServer(conn);
-
-            using (Cont _cont = new Cont(optionsBuilder.Options))
+            var config = new MapperConfiguration(cfg =>
             {
-                var config = new MapperConfiguration(cfg =>
-                {
-                    cfg.AddProfile<AutoMapperProfile>();
-                });
+                cfg.AddProfile<AutoMapperProfile>();
+            });
 
-                var _mapper = config.CreateMapper();
-                var serviceResponse = new ServiceResponse<List<StudioItemType>>
-                {
-                    Data = await _cont.StudioItemTypes.OrderBy(s => s.Value).ToListAsync(),
-                    Message = "Item types fetched",
-                    Success = true
-                };
+            var _mapper = config.CreateMapper();
+            var serviceResponse = new ServiceResponse<List<StudioItemType>>
+            {
+                Data = await _cont.StudioItemTypes.OrderBy(s => s.Value).ToListAsync(),
+                Message = "Item types fetched",
+                Success = true
+            };
 
-                return serviceResponse;
-            }
+            return serviceResponse;
+        
         }
     }
 
