@@ -1,0 +1,28 @@
+.introducing {
+  color: #FFC107 !important;
+}
+
+.listo1 {
+  margin-left: 0px;
+  padding: 0;
+  font-size: 30px;
+  font-weight: 500;
+  list-style-type: none;
+  li {
+    display: flex;
+    margin-top: 10px;
+    &:before {
+      content: "";
+      display: block;
+      border: 2px solid #9c27b0;
+      height: 50px;
+      width: 50px;
+      border-radius: 50px;
+      margin-right: 10px;
+    }
+  }
+}
+
+.mw-500px {
+  max-width: 500px;
+}

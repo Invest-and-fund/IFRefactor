@@ -1,0 +1,76 @@
+.main-top {
+    background-color: #201c31;
+    position: relative;
+    height: 160px;
+    &:after {
+        content: "";
+        display: block;
+        clip-path: polygon(40% 60px, 60% 0, 100% 100%, 0% 100%);
+        width: 100%;
+        background-color: white;
+        height: 95px;
+        position: absolute;
+        bottom: 0px;
+    }
+}
+
+.create-btn {
+    display: block;
+    border: 0;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+
+    color: #fff;
+    padding: 0;
+
+    font-size: 16px;
+    background: linear-gradient(90deg, #7366FF -18.33%, #563EE0 62.78%);
+    border-radius: 5px;
+    padding: 15px 54px;
+    margin-left: 10px;
+}
+
+.landing-title {
+    h2 {
+        color: #000248;
+        font-size: 4rem;
+        font-weight: 700;
+    }
+    .subtitle, .sub-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #5841e3;
+    }
+}
+
+.big-title {
+    font-weight: 700;
+    font-size: 200px;
+    line-height: 229px;
+    letter-spacing: -0.045em;
+    color: rgba(234, 235, 241, 0.5);
+    margin-bottom: 0;
+}
+
+header.sticky {
+    .navbar-nav {
+        font-weight: 500;
+        font-size: 1.2rem;
+    }
+}
+
+.navbar-dark {
+    margin-top: 0;
+    background: #1d1f29;
+}
+
+.security .trans h2 {
+    color: var(--theme-deafult);
+    font-weight: 500;
+    font-size: 100px;
+    background: linear-gradient(180deg, #5456AA 0%, rgba(0, 2, 72, 0) 88.85%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0;
+    line-height: 1;
+    opacity: 0.1;
+}
