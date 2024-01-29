@@ -4,6 +4,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using AcemStudios.ApiRefactor.Data;
 
 namespace AcemStudios.ApiRefactor
 {
@@ -21,15 +23,16 @@ namespace AcemStudios.ApiRefactor
             services.AddCors(options =>
              {
                  options.AddPolicy("AllowMyOrigin",
-                 builder => builder.WithOrigins("http://localhost:4200")
+                 builder => builder.WithOrigins("http://localhost:5173")
                  .AllowAnyHeader()
                  .AllowAnyMethod()
                  );
              });
 
             services.AddControllers();
-
             services.AddSwaggerGen();
+            services.AddDbContext<Cont>(options => options.UseSqlServer("name=ConnectionStrings:DefaultConnection"));
+            services.AddScoped<DbContext, Cont>();
 
             services.AddAutoMapper(typeof(Startup));
         }
