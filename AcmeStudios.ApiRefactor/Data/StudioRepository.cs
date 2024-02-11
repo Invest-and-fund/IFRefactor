@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AcmeStudios.ApiRefactor.Data
 {
-    public class StudioRepository<T> : IRepository<T> where T : class
+    public class StudioRepository<TEntity> : IRepository<TEntity> where TEntity : class
     {
         private readonly StudioDbContext _studioDbContext;
 
@@ -20,28 +20,42 @@ namespace AcmeStudios.ApiRefactor.Data
             _studioDbContext = studioDbContext;
         }
 
-        public IQueryable<T> GetAll()
+        public IQueryable<TEntity> GetAll(params Expression<Func<TEntity, object>>[] includes)
         {
-            return _studioDbContext.Set<T>().AsNoTracking();
+            IQueryable<TEntity> query = _studioDbContext.Set<TEntity>();
+
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+
+            return query.AsNoTracking();
         }
 
-        public async Task<T> GetByIdAsync(Expression<Func<T, bool>> expression)
+        public async Task<TEntity> GetByIdAsync(Expression<Func<TEntity, bool>> expression, params Expression<Func<TEntity, object>>[] includes)
         {
-            return await _studioDbContext.Set<T>().FirstOrDefaultAsync(expression);
+            IQueryable<TEntity> query = _studioDbContext.Set<TEntity>();
+
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+
+            return await query.AsNoTracking().FirstOrDefaultAsync(expression);
         }
 
-        public async Task AddAsync(T item)
+        public async Task AddAsync(TEntity item)
         {
-            await _studioDbContext.Set<T>().AddAsync(item);
+            await _studioDbContext.Set<TEntity>().AddAsync(item);
         }
-        public void Update(T item)
+        public void Update(TEntity item)
         {
-            _studioDbContext.Set<T>().Update(item);
+            _studioDbContext.Set<TEntity>().Update(item);
         }
 
-        public void Delete(T item)
+        public void Delete(TEntity item)
         {
-            _studioDbContext.Set<T>().Remove(item);
+            _studioDbContext.Set<TEntity>().Remove(item);
         }
 
         public async Task SaveChangesAsync()

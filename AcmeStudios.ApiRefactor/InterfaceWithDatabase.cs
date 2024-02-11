@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AcemStudios.ApiRefactor.DTOs;
 
 using AcmeStudios.ApiRefactor.Contracts;
+using AcmeStudios.ApiRefactor.DTOs;
 using AcmeStudios.ApiRefactor.Entities;
 using AcmeStudios.ApiRefactor.Responses;
 
@@ -17,97 +18,64 @@ namespace AcemStudios.ApiRefactor
 {
     public class InterfaceWithDatabase : IInterfaceWithDatabase
     {
+        private readonly IMapper _mapper;
         private readonly IRepository<StudioItem> _studioItemRepository;
         private readonly IRepository<StudioItemType> _studioItemTypeRepository;
 
-        public InterfaceWithDatabase(IRepository<StudioItem> studioItemRepository, IRepository<StudioItemType> studioItemTypeRepository)
+        public InterfaceWithDatabase(IMapper mapper, IRepository<StudioItem> studioItemRepository, IRepository<StudioItemType> studioItemTypeRepository)
         {
+            _mapper = mapper;
             _studioItemRepository = studioItemRepository;
             _studioItemTypeRepository = studioItemTypeRepository;
         }
 
-        public async Task<ServiceResponse<List<GetStudioItemDto>>> AddStudioItem(AddStudioItemDto newStudioItem)
+        public async Task<ServiceResponse<List<StudioItemDto>>> AddStudioItem(StudioItemForCreationDto newStudioItem)
         {
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<AutoMapperProfile>();
-            });
-
-            var _mapper = config.CreateMapper();
-
             StudioItem item = _mapper.Map<StudioItem>(newStudioItem);
             await _studioItemRepository.AddAsync(item);
             await _studioItemRepository.SaveChangesAsync();
 
-            var listOfStudios = _studioItemRepository.GetAll();
-
-            return new ServiceResponse<List<GetStudioItemDto>>
+            return new ServiceResponse<List<StudioItemDto>>
             {
-                Data = await listOfStudios.Select(c => _mapper.Map<GetStudioItemDto>(c)).ToListAsync(),
+                Data = await GetAllStudioItemDtos(),
                 Message = $"New item added.  Id: {item.StudioItemId}",
                 Success = true
             };
         }
 
-        public async Task<ServiceResponse<List<GetStudioItemHeaderDto>>> GetAllStudioHeaderItems()
+        public async Task<ServiceResponse<List<StudioItemHeaderDto>>> GetAllStudioHeaderItems()
         {
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<AutoMapperProfile>();
-            });
-
-            var _mapper = config.CreateMapper();
-
             var listOfStudios = _studioItemRepository.GetAll();
 
-            return new ServiceResponse<List<GetStudioItemHeaderDto>>
+            return new ServiceResponse<List<StudioItemHeaderDto>>
             {
-                Data = await listOfStudios.Select(c => _mapper.Map<GetStudioItemHeaderDto>(c)).ToListAsync(),
+                Data = await listOfStudios.Select(s => _mapper.Map<StudioItemHeaderDto>(s)).ToListAsync(),
                 Message = "Here's all the items in your studio",
                 Success = true
             };
         }
 
-        public async Task<ServiceResponse<GetStudioItemDto>> GetStudioItemById(int id)
+        public async Task<ServiceResponse<StudioItemDto>> GetStudioItemById(int id)
         {
-            var config = new MapperConfiguration(cfg =>
+            var studio = await _studioItemRepository.GetByIdAsync(e => e.StudioItemId == id, includes: e => e.StudioItemType);
+
+            return new ServiceResponse<StudioItemDto>
             {
-                cfg.AddProfile<AutoMapperProfile>();
-            });
-
-            var _mapper = config.CreateMapper();
-
-            //var item = await _cont.StudioItems
-            //.Where(item => item.StudioItemId == id)
-            //.Include(type => type.StudioItemType)
-            //.FirstOrDefaultAsync();
-
-            var studio = await _studioItemRepository.GetByIdAsync(e => e.StudioItemId == id);
-
-            return new ServiceResponse<GetStudioItemDto>
-            {
-                Data = _mapper.Map<GetStudioItemDto>(studio),
+                Data = _mapper.Map<StudioItemDto>(studio),
                 Message = "Here's your selected studio item",
                 Success = true
             };
         }
 
-        public async Task<ServiceResponse<GetStudioItemDto>> UpdateStudioItem(UpdateStudioItemDto updatedStudioItem)
+        public async Task<ServiceResponse<StudioItemDto>> UpdateStudioItem(StudioItemForUpdateDto updatedStudioItem)
         {
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<AutoMapperProfile>();
-            });
-
-            var _mapper = config.CreateMapper();
-
-            var serviceResponse = new ServiceResponse<GetStudioItemDto>();
+            var serviceResponse = new ServiceResponse<StudioItemDto>();
 
             StudioItem studioItem = await _studioItemRepository.GetByIdAsync(c => c.StudioItemId == updatedStudioItem.StudioItemId);
 
             if (studioItem is null)
             {
-                return new ServiceResponse<GetStudioItemDto>
+                return new ServiceResponse<StudioItemDto>
                 {
                     Data = null,
                     Message = $"Studio Item {updatedStudioItem.StudioItemId} not found",
@@ -117,17 +85,12 @@ namespace AcemStudios.ApiRefactor
 
             try
             {
-                studioItem.Acquired = updatedStudioItem.Acquired;
-                studioItem.Description = updatedStudioItem.Description;
-                studioItem.Eurorack = updatedStudioItem.Eurorack;
-                studioItem.Name = updatedStudioItem.Name;
-                studioItem.Price = updatedStudioItem.Price;
-                studioItem.SerialNumber = updatedStudioItem.SerialNumber;
-                studioItem.Sold = updatedStudioItem.Sold;
-                studioItem.SoldFor = updatedStudioItem.SoldFor;
-                studioItem.StudioItemType = updatedStudioItem.StudioItemType;
+                studioItem = _mapper.Map<StudioItem>(updatedStudioItem);
 
-                serviceResponse.Data = _mapper.Map<GetStudioItemDto>(studioItem);
+                _studioItemRepository.Update(studioItem);
+                await _studioItemRepository.SaveChangesAsync();
+
+                serviceResponse.Data = _mapper.Map<StudioItemDto>(studioItem);
                 serviceResponse.Message = "Update successful";
                 serviceResponse.Success = true;
             }
@@ -138,22 +101,12 @@ namespace AcemStudios.ApiRefactor
                 serviceResponse.Success = false;
             }
 
-            _studioItemRepository.Update(studioItem);
-            await _studioItemRepository.SaveChangesAsync();
-
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<List<GetStudioItemDto>>> DeleteStudioItem(int id)
+        public async Task<ServiceResponse<List<StudioItemDto>>> DeleteStudioItem(int id)
         {
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<AutoMapperProfile>();
-            });
-
-            var _mapper = config.CreateMapper();
-
-            var serviceResponse = new ServiceResponse<List<GetStudioItemDto>>();
+            var serviceResponse = new ServiceResponse<List<StudioItemDto>>();
 
             try
             {
@@ -161,7 +114,7 @@ namespace AcemStudios.ApiRefactor
 
                 if (studioItem is null)
                 {
-                    return new ServiceResponse<List<GetStudioItemDto>>
+                    return new ServiceResponse<List<StudioItemDto>>
                     {
                         Data = null,
                         Message = $"Studio Item {id} not found",
@@ -172,9 +125,7 @@ namespace AcemStudios.ApiRefactor
                 _studioItemRepository.Delete(studioItem);
                 await _studioItemRepository.SaveChangesAsync();
 
-                var listOfStudios = _studioItemRepository.GetAll();
-
-                serviceResponse.Data = await listOfStudios.Select(c => _mapper.Map<GetStudioItemDto>(c)).ToListAsync();
+                serviceResponse.Data = await GetAllStudioItemDtos();
                 serviceResponse.Message = "Item deleted";
                 serviceResponse.Success = true;
             }
@@ -188,21 +139,23 @@ namespace AcemStudios.ApiRefactor
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<List<StudioItemType>>> GetAllStudioItemTypes()
+        public async Task<ServiceResponse<List<StudioItemTypeDto>>> GetAllStudioItemTypes()
         {
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<AutoMapperProfile>();
-            });
+            var listOfStuidoItemTypes = _studioItemTypeRepository.GetAll();
 
-            var _mapper = config.CreateMapper();
-
-            return new ServiceResponse<List<StudioItemType>>
+            return new ServiceResponse<List<StudioItemTypeDto>>
             {
-                Data = await _studioItemTypeRepository.GetAll().OrderBy(s => s.Value).ToListAsync(),
+                Data = await listOfStuidoItemTypes.OrderBy(s => s.Value).Select(s => _mapper.Map<StudioItemTypeDto>(s)).ToListAsync(),
                 Message = "Item types fetched",
                 Success = true
             };
+        }
+
+        private async Task<List<StudioItemDto>> GetAllStudioItemDtos()
+        {
+            var listOfStudios = _studioItemRepository.GetAll(includes: e => e.StudioItemType);
+
+            return await listOfStudios.Select(c => _mapper.Map<StudioItemDto>(c)).ToListAsync();
         }
     }
 }

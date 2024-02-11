@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 
 namespace AcmeStudios.ApiRefactor.Contracts
 {
-    public interface IRepository<T> where T : class
+    public interface IRepository<TEntity> where TEntity : class
     {
-        IQueryable<T> GetAll();
-        Task<T> GetByIdAsync(Expression<Func<T, bool>> expression);
-        Task AddAsync(T item);
-        void Update(T item);
-        void Delete(T item);
+        IQueryable<TEntity> GetAll(params Expression<Func<TEntity, object>>[] includes);
+        Task<TEntity> GetByIdAsync(Expression<Func<TEntity, bool>> expression, params Expression<Func<TEntity, object>>[] includes);
+        Task AddAsync(TEntity item);
+        void Update(TEntity item);
+        void Delete(TEntity item);
         Task SaveChangesAsync();
     }
 }

@@ -14,5 +14,4 @@ namespace AcmeStudios.ApiRefactor.Entities
         [JsonIgnore]
         public ICollection<StudioItem> StudioItem { get; set; }
     }
-
 }

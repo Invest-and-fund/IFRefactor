@@ -22,8 +22,5 @@ namespace AcmeStudios.ApiRefactor.Entities
         [Required]
         public int StudioItemTypeId { get; set; }
         public StudioItemType StudioItemType { get; set; }
-
-
     }
-
 }
