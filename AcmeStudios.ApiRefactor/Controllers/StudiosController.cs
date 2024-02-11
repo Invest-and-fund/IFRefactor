@@ -12,9 +12,9 @@ namespace AcemStudios.ApiRefactor.Controllers
     [ApiController]
     public class StudiosController : ControllerBase
     {
-        private readonly IInterfaceWithDatabase _interfaceWithDatabase;
+        private readonly IStudioHandler _interfaceWithDatabase;
 
-        public StudiosController(IInterfaceWithDatabase interfaceWithDatabase)
+        public StudiosController(IStudioHandler interfaceWithDatabase)
         {
             _interfaceWithDatabase = interfaceWithDatabase;
         }

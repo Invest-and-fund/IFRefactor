@@ -6,7 +6,7 @@ using AcmeStudios.ApiRefactor.Responses;
 
 namespace AcmeStudios.ApiRefactor.Contracts
 {
-    public interface IInterfaceWithDatabase
+    public interface IStudioHandler
     {
         Task<ServiceResponse<List<StudioItemDto>>> AddStudioItem(StudioItemForCreationDto newStudioItem);
         Task<ServiceResponse<List<StudioItemDto>>> DeleteStudioItem(int id);

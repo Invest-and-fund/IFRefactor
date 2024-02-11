@@ -12,15 +12,15 @@ using AutoMapper;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace AcemStudios.ApiRefactor
+namespace AcmeStudios.ApiRefactor.Handlers
 {
-    public class InterfaceWithDatabase : IInterfaceWithDatabase
+    public class StudioHandler : IStudioHandler
     {
         private readonly IMapper _mapper;
         private readonly IRepository<StudioItem> _studioItemRepository;
         private readonly IRepository<StudioItemType> _studioItemTypeRepository;
 
-        public InterfaceWithDatabase(IMapper mapper, IRepository<StudioItem> studioItemRepository, IRepository<StudioItemType> studioItemTypeRepository)
+        public StudioHandler(IMapper mapper, IRepository<StudioItem> studioItemRepository, IRepository<StudioItemType> studioItemTypeRepository)
         {
             _mapper = mapper;
             _studioItemRepository = studioItemRepository;

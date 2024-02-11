@@ -3,7 +3,7 @@ using AcemStudios.ApiRefactor.Data;
 using AcmeStudios.ApiRefactor.Contracts;
 using AcmeStudios.ApiRefactor.Data;
 using AcmeStudios.ApiRefactor.Entities;
-
+using AcmeStudios.ApiRefactor.Handlers;
 using AutoMapper;
 
 using Microsoft.AspNetCore.Builder;
@@ -47,7 +47,7 @@ namespace AcemStudios.ApiRefactor
             services.AddAutoMapper(typeof(Startup));
             services.AddScoped<IRepository<StudioItem>, StudioRepository<StudioItem>>();
             services.AddScoped<IRepository<StudioItemType>, StudioRepository<StudioItemType>>();
-            services.AddScoped<IInterfaceWithDatabase, InterfaceWithDatabase>();
+            services.AddScoped<IStudioHandler, StudioHandler>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
