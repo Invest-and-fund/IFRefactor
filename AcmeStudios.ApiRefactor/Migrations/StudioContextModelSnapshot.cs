@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace AcemStudios.Migrations
 {
-    [DbContext(typeof(Cont))]
+    [DbContext(typeof(StudioDbContext))]
     partial class StudioContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
