@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AcmeStudios.ApiRefactor.Entities;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace AcemStudios.ApiRefactor.Data
 {

@@ -1,15 +1,18 @@
-﻿using AcemStudios.ApiRefactor.Data;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+using AcemStudios.ApiRefactor.Data;
 using AcemStudios.ApiRefactor.DTOs;
+
+using AcmeStudios.ApiRefactor.Entities;
+using AcmeStudios.ApiRefactor.Responses;
+
 using AutoMapper;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace AcemStudios.ApiRefactor
 {
@@ -244,46 +247,4 @@ namespace AcemStudios.ApiRefactor
             }
         }
     }
-
-    public class StudioItem
-    {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int StudioItemId { get; set; }
-        public DateTime Acquired { get; set; }
-        public DateTime? Sold { get; set; } = null;
-        [Required]
-        public string Name { get; set; }
-        [Required]
-        public string Description { get; set; }
-        [Required]
-        public string SerialNumber { get; set; }
-        public decimal Price { get; set; } //= 10.00M;
-        public decimal? SoldFor { get; set; } //= 0M;
-        public bool Eurorack { get; set; } //= false;
-        [Required]
-        public int StudioItemTypeId { get; set; }
-        public StudioItemType StudioItemType { get; set; }
-
-
-    }
-
-    public class StudioItemType
-    {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int StudioItemTypeId { get; set; }
-        [Required]
-        public string Value { get; set; }
-        [JsonIgnore]
-        public ICollection<StudioItem> StudioItem { get; set; }
-    }
-
-    public class ServiceResponse<T>
-    {
-        public T Data { get; set; }
-
-        public bool Success { get; set; } = false;
-
-        public string Message { get; set; } = null;
-    }
-
 }

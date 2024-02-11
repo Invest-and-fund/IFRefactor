@@ -1,4 +1,5 @@
 ﻿using AcemStudios.ApiRefactor.DTOs;
+using AcmeStudios.ApiRefactor.Entities;
 using AutoMapper;
 
 namespace AcemStudios.ApiRefactor
