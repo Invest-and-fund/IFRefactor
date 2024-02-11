@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-using AcemStudios.ApiRefactor.DTOs;
-
 using AcmeStudios.ApiRefactor.Contracts;
 using AcmeStudios.ApiRefactor.DTOs;
 using AcmeStudios.ApiRefactor.Entities;
@@ -35,52 +33,42 @@ namespace AcemStudios.ApiRefactor
             await _studioItemRepository.AddAsync(item);
             await _studioItemRepository.SaveChangesAsync();
 
-            return new ServiceResponse<List<StudioItemDto>>
-            {
-                Data = await GetAllStudioItemDtos(),
-                Message = $"New item added.  Id: {item.StudioItemId}",
-                Success = true
-            };
+            var data = await GetAllStudioItemDtos();
+
+            return CreateServiceResponse(data, $"New item added.  Id: {item.StudioItemId}", true);
         }
 
         public async Task<ServiceResponse<List<StudioItemHeaderDto>>> GetAllStudioHeaderItems()
         {
             var listOfStudios = _studioItemRepository.GetAll();
+            var data = await listOfStudios.Select(s => _mapper.Map<StudioItemHeaderDto>(s)).ToListAsync();
 
-            return new ServiceResponse<List<StudioItemHeaderDto>>
-            {
-                Data = await listOfStudios.Select(s => _mapper.Map<StudioItemHeaderDto>(s)).ToListAsync(),
-                Message = "Here's all the items in your studio",
-                Success = true
-            };
+            return CreateServiceResponse(data, "Here's all the items in your studio", true);
         }
 
         public async Task<ServiceResponse<StudioItemDto>> GetStudioItemById(int id)
         {
-            var studio = await _studioItemRepository.GetByIdAsync(e => e.StudioItemId == id, includes: e => e.StudioItemType);
+            var studioItem = await _studioItemRepository.GetByIdAsync(e => e.StudioItemId == id, includes: e => e.StudioItemType);
 
-            return new ServiceResponse<StudioItemDto>
+            if (studioItem is null)
             {
-                Data = _mapper.Map<StudioItemDto>(studio),
-                Message = "Here's your selected studio item",
-                Success = true
-            };
+                return CreateServiceResponse<StudioItemDto>(null, $"Studio Item {id} not found", false);
+            }
+
+            var data = _mapper.Map<StudioItemDto>(studioItem);
+
+            return CreateServiceResponse(data, "Here's your selected studio item", true);
         }
 
         public async Task<ServiceResponse<StudioItemDto>> UpdateStudioItem(StudioItemForUpdateDto updatedStudioItem)
         {
             var serviceResponse = new ServiceResponse<StudioItemDto>();
 
-            StudioItem studioItem = await _studioItemRepository.GetByIdAsync(c => c.StudioItemId == updatedStudioItem.StudioItemId);
+            StudioItem studioItem = await _studioItemRepository.GetByIdAsync(c => c.StudioItemId == updatedStudioItem.StudioItemId, includes: e => e.StudioItemType);
 
             if (studioItem is null)
             {
-                return new ServiceResponse<StudioItemDto>
-                {
-                    Data = null,
-                    Message = $"Studio Item {updatedStudioItem.StudioItemId} not found",
-                    Success = false
-                };
+                return CreateServiceResponse<StudioItemDto>(null, $"Studio Item {updatedStudioItem.StudioItemId} not found", false);
             }
 
             try
@@ -90,15 +78,13 @@ namespace AcemStudios.ApiRefactor
                 _studioItemRepository.Update(studioItem);
                 await _studioItemRepository.SaveChangesAsync();
 
-                serviceResponse.Data = _mapper.Map<StudioItemDto>(studioItem);
-                serviceResponse.Message = "Update successful";
-                serviceResponse.Success = true;
+                var data = _mapper.Map<StudioItemDto>(studioItem);
+
+                serviceResponse = CreateServiceResponse(data, "Update successful", true);
             }
             catch (Exception ex)
             {
-                serviceResponse.Data = null;
-                serviceResponse.Message = ex.Message;
-                serviceResponse.Success = false;
+                serviceResponse = CreateServiceResponse<StudioItemDto>(null, ex.Message, false);
             }
 
             return serviceResponse;
@@ -114,26 +100,19 @@ namespace AcemStudios.ApiRefactor
 
                 if (studioItem is null)
                 {
-                    return new ServiceResponse<List<StudioItemDto>>
-                    {
-                        Data = null,
-                        Message = $"Studio Item {id} not found",
-                        Success = false
-                    };
+                    return CreateServiceResponse<List<StudioItemDto>>(null, $"Studio Item {id} not found", false);
                 }
 
                 _studioItemRepository.Delete(studioItem);
                 await _studioItemRepository.SaveChangesAsync();
 
-                serviceResponse.Data = await GetAllStudioItemDtos();
-                serviceResponse.Message = "Item deleted";
-                serviceResponse.Success = true;
+                var data = await GetAllStudioItemDtos();
+
+                serviceResponse = CreateServiceResponse(data, "Item deleted", true);
             }
             catch (Exception ex)
             {
-                serviceResponse.Data = null;
-                serviceResponse.Message = ex.Message;
-                serviceResponse.Success = false;
+                serviceResponse = CreateServiceResponse<List<StudioItemDto>>(null, ex.Message, false);
             }
 
             return serviceResponse;
@@ -142,13 +121,9 @@ namespace AcemStudios.ApiRefactor
         public async Task<ServiceResponse<List<StudioItemTypeDto>>> GetAllStudioItemTypes()
         {
             var listOfStuidoItemTypes = _studioItemTypeRepository.GetAll();
+            var data = await listOfStuidoItemTypes.OrderBy(s => s.Value).Select(s => _mapper.Map<StudioItemTypeDto>(s)).ToListAsync();
 
-            return new ServiceResponse<List<StudioItemTypeDto>>
-            {
-                Data = await listOfStuidoItemTypes.OrderBy(s => s.Value).Select(s => _mapper.Map<StudioItemTypeDto>(s)).ToListAsync(),
-                Message = "Item types fetched",
-                Success = true
-            };
+            return CreateServiceResponse(data, "Item types fetched", true);
         }
 
         private async Task<List<StudioItemDto>> GetAllStudioItemDtos()
@@ -156,6 +131,16 @@ namespace AcemStudios.ApiRefactor
             var listOfStudios = _studioItemRepository.GetAll(includes: e => e.StudioItemType);
 
             return await listOfStudios.Select(c => _mapper.Map<StudioItemDto>(c)).ToListAsync();
+        }
+
+        private static ServiceResponse<T> CreateServiceResponse<T>(T data, string message, bool isSuccess) where T : class
+        {
+            return new ServiceResponse<T>
+            {
+                Data = data,
+                Message = message,
+                Success = isSuccess
+            };
         }
     }
 }

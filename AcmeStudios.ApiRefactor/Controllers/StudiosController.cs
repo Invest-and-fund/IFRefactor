@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-using AcemStudios.ApiRefactor.DTOs;
-
 using AcmeStudios.ApiRefactor.Contracts;
 using AcmeStudios.ApiRefactor.DTOs;
 
@@ -10,24 +8,24 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AcemStudios.ApiRefactor.Controllers
 {
-    [Route("peoplespartnership/api/[controller]")]
+    [Route("peoplespartnership/api/studios")]
     [ApiController]
-    public class AnController : ControllerBase
+    public class StudiosController : ControllerBase
     {
         private readonly IInterfaceWithDatabase _interfaceWithDatabase;
 
-        public AnController(IInterfaceWithDatabase interfaceWithDatabase)
+        public StudiosController(IInterfaceWithDatabase interfaceWithDatabase)
         {
             _interfaceWithDatabase = interfaceWithDatabase;
         }
 
-        [HttpGet("GetAll")]
+        [HttpGet]
         public async Task<ActionResult<List<StudioItemHeaderDto>>> Get()
         {
             return Ok(await _interfaceWithDatabase.GetAllStudioHeaderItems());
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<ActionResult<StudioItemDto>> GetById(int id)
         {
             return Ok(await _interfaceWithDatabase.GetStudioItemById(id));
@@ -45,13 +43,13 @@ namespace AcemStudios.ApiRefactor.Controllers
             return Ok(await _interfaceWithDatabase.UpdateStudioItem(studioItem));
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
         {
             return Ok(await _interfaceWithDatabase.DeleteStudioItem(id));
         }
 
-        [HttpGet]
+        [HttpGet("types")]
         public async Task<ActionResult<StudioItemTypeDto>> GetStudioItemTypes()
         {
             return Ok(await _interfaceWithDatabase.GetAllStudioItemTypes());
