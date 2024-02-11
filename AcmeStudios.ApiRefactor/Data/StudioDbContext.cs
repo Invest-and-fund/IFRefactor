@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AcemStudios.ApiRefactor.Data
 {
-    public class Cont : DbContext
+    public class StudioDbContext : DbContext
     {
         public DbSet<StudioItem> StudioItems { get; set; }
         public DbSet<StudioItemType> StudioItemTypes { get; set; }
-        public Cont(DbContextOptions<Cont> options) : base(options) { }
+        public StudioDbContext(DbContextOptions<StudioDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
