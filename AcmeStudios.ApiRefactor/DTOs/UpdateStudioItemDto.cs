@@ -1,22 +1,23 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using AcmeStudios.ApiRefactor.Entities;
 
-namespace AcemStudios.ApiRefactor.DTOs
+namespace AcmeStudios.ApiRefactor.DTOs
 {
     public class UpdateStudioItemDto
     {
-        public int StudioItemId { get; set; }
-        public DateTime Acquired { get; set; } = new DateTime(2020, 08, 04);
+        public long StudioItemId { get; set; }
+        public DateTime Acquired { get; set; }
         public DateTime? Sold { get; set; } = null;
         [Required]
-        public string Name { get; set; } = "DSI Mopho x4";
+        public string Name { get; set; }
         [Required]
-        public string Description { get; set; } = "Dave Smith Instruments analog poly";
+        public string Description { get; set; }
         [Required]
-        public string SerialNumber { get; set; } = "123456";
-        public decimal Price { get; set; } = 10.00M;
-        public decimal SoldFor { get; set; } = 0M;
-        public bool Eurorack { get; set; } = false;
+        public string SerialNumber { get; set; }
+        public decimal Price { get; set; }
+        public decimal SoldFor { get; set; }
+        public bool Eurorack { get; set; }
 
         public StudioItemType StudioItemType { get; set; }
 

@@ -1,0 +1,17 @@
+@model AcmeStudios.ApiRefactor.ViewModels.FileUploadViewModel
+
+@{
+    ViewBag.Title = "Upload Image";
+    Layout = null;
+}
+
+@using (Html.BeginForm("Index", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary(true)
+    <div>
+        @Html.LabelFor(model => model.File)
+        <input type="file" id="File" name="File" />
+        @Html.ValidationMessageFor(model => model.File)
+    </div>
+    <button type="submit">Upload File</button>
+}

@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace AcemStudios.ApiRefactor.DTOs
+namespace AcmeStudios.ApiRefactor.DTOs
 {
     public class GetStudioItemHeaderDto
     {
-        public int StudioItemId { get; set; }      
+        public long StudioItemId { get; set; }      
         [Required]
         public string Name { get; set; }
         [Required]
