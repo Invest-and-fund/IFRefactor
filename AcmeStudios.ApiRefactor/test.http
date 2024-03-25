@@ -7,12 +7,12 @@ Content-Type: application/json
 
 {
   "Acquired": "2023-03-23T21:20:00Z",  
-  "Name": "New Studio Item",
-  "Description": "Description of the new item",
-  "SerialNumber": "123456789",
-  "Price": 149.99,
+  "Name": "New Studio Item 3",
+  "Description": "Description of the new item 3",
+  "SerialNumber": "234234234",
+  "Price": 349.99,
   "Eurorack": true,
-  "StudioItemTypeId": 1  
+  "StudioItemTypeId": 3  
 }
 ### Get All items
  

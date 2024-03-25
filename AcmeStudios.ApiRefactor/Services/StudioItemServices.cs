@@ -103,14 +103,14 @@ namespace AcmeStudios.ApiRefactor.Services;
         var serviceResponse = new ServiceResponse<GetStudioItemDto>();
         try
         {
-            var studioItem = await studioItemRepository.FirstOrDefaultAsync(c => c.Id == updatedStudioItem.StudioItemId);
+            var studioItem = await studioItemRepository.FirstOrDefaultAsync(c => c.Id == updatedStudioItem.Id);
 
             if (studioItem == null)
             {
                 return new ServiceResponse<GetStudioItemDto>
                 {
                     Success = false,
-                    Message = $"Studio item with ID {updatedStudioItem.StudioItemId} not found"
+                    Message = $"Studio item with ID {updatedStudioItem.Id} not found"
                 };
             }
 

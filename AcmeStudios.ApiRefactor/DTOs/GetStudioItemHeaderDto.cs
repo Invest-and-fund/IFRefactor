@@ -4,7 +4,7 @@ namespace AcmeStudios.ApiRefactor.DTOs
 {
     public class GetStudioItemHeaderDto
     {
-        public long StudioItemId { get; set; }      
+        public long Id { get; set; }      
         [Required]
         public string Name { get; set; }
         [Required]

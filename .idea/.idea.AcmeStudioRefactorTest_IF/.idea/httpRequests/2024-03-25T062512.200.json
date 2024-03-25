@@ -1,0 +1,45 @@
+{
+  "data": [
+    {
+      "studioItemId": 0,
+      "acquired": "2024-03-24T16:41:35.758",
+      "sold": "2024-03-24T16:41:35.758",
+      "name": "string",
+      "description": "string",
+      "serialNumber": "string",
+      "price": 0.0,
+      "soldFor": 0.0,
+      "eurorack": true,
+      "studioItemTypeId": 1,
+      "studioItemType": null
+    },
+    {
+      "studioItemId": 0,
+      "acquired": "2023-03-23T21:20:00",
+      "sold": null,
+      "name": "New Studio Item",
+      "description": "Description of the new item",
+      "serialNumber": "123456789",
+      "price": 149.99,
+      "soldFor": 0.0,
+      "eurorack": true,
+      "studioItemTypeId": 1,
+      "studioItemType": null
+    },
+    {
+      "studioItemId": 0,
+      "acquired": "2023-03-23T21:20:00Z",
+      "sold": null,
+      "name": "New Studio Item 1",
+      "description": "Description of the new item 1",
+      "serialNumber": "000000",
+      "price": 249.99,
+      "soldFor": 0,
+      "eurorack": true,
+      "studioItemTypeId": 2,
+      "studioItemType": null
+    }
+  ],
+  "success": true,
+  "message": "New item added. Id: 3"
+}

@@ -1,0 +1,62 @@
+GET https://localhost:5001/peoplespartnership/api/studioitem/1
+Content-Type: application/json
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.10)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2024-03-25T062749.200.json
+
+###
+
+POST https://localhost:5001/peoplespartnership/api/studioitem
+Content-Type: application/json
+Content-Length: 220
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.10)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "Acquired": "2023-03-23T21:20:00Z",  
+  "Name": "New Studio Item 3",
+  "Description": "Description of the new item 3",
+  "SerialNumber": "234234234",
+  "Price": 349.99,
+  "Eurorack": true,
+  "StudioItemTypeId": 3  
+}
+
+<> 2024-03-25T062530.200.json
+
+###
+
+POST https://localhost:5001/peoplespartnership/api/studioitem
+Content-Type: application/json
+Content-Length: 217
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.10)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "Acquired": "2023-03-23T21:20:00Z",  
+  "Name": "New Studio Item 1",
+  "Description": "Description of the new item 1",
+  "SerialNumber": "000000",
+  "Price": 249.99,
+  "Eurorack": true,
+  "StudioItemTypeId": 2  
+}
+
+<> 2024-03-25T062512.200.json
+
+###
+
+GET https://localhost:5001/peoplespartnership/api/studioitem/GetAll
+Content-Type: application/json
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.10)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+<> 2024-03-25T060856.200.json
+
+###
+

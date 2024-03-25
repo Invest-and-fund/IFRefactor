@@ -1,0 +1,17 @@
+{
+  "data": {
+    "studioItemId": 0,
+    "acquired": "2024-03-24T16:41:35.758",
+    "sold": "2024-03-24T16:41:35.758",
+    "name": "string",
+    "description": "string",
+    "serialNumber": "string",
+    "price": 0.0,
+    "soldFor": 0.0,
+    "eurorack": true,
+    "studioItemTypeId": 1,
+    "studioItemType": null
+  },
+  "success": true,
+  "message": "Here's your selected studio item"
+}

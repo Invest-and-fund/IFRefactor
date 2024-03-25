@@ -6,7 +6,7 @@ namespace AcmeStudios.ApiRefactor.DTOs
 {
     public class UpdateStudioItemDto
     {
-        public long StudioItemId { get; set; }
+        public long Id { get; set; }
         public DateTime Acquired { get; set; }
         public DateTime? Sold { get; set; } = null;
         [Required]

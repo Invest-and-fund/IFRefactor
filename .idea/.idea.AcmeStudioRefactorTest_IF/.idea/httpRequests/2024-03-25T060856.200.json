@@ -1,0 +1,16 @@
+{
+  "data": [
+    {
+      "studioItemId": 0,
+      "name": "string",
+      "description": "string"
+    },
+    {
+      "studioItemId": 0,
+      "name": "New Studio Item",
+      "description": "Description of the new item"
+    }
+  ],
+  "success": true,
+  "message": "Here's all the items in your studio"
+}
